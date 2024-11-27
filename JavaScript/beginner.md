@@ -798,6 +798,44 @@ window.onload = function(){
 
 ```
 
+**substr的說明**
+
+> string.substr(start, length)
+
+參數說明:
+
+1. start（起始位置）：
+
+    - 從字串中開始提取的索引位置（以 0 為起始索引）。
+    - 如果是負數，會從字串的末尾開始計算位置。
+
+2. length（可選，提取的長度）：
+
+    - 要提取的字串長度。
+    - 如果省略，則從起始位置開始一直提取到字串結尾。
+
+
+範例:
+
+``` js
+let str = "Hello, world!";
+console.log(str.substr(7, 5)); // "world"
+```
+
+> 解釋：從索引 7 開始，提取 5 個字符，結果是 "world"。
+
+``` js
+console.log(str.substr(7)); // "world!"
+```
+
+> 解釋：從索引 7 開始，一直到字串的結尾。
+
+``` js
+console.log(str.substr(-6, 5)); // "world"
+```
+
+> 解釋：-6 表示從字串末尾往前數第 6 個字符開始提取，提取 5 個字符。
+
 ---
 
 # 第六章 迴圈入門篇
