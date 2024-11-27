@@ -504,7 +504,7 @@ logHello();
         title.style.fontSize = "200px";
     });
     document.getElementById("fontSizeSmall_btn").addEventListener("click", function(){
-        itle.style.fontSize = "100px";
+        title.style.fontSize = "100px";
     });
     document.getElementById("fontSizeNormal_btn").addEventListener("click", function(){
         title.style.fontSize = "150px";
