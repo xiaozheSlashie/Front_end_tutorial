@@ -1,6 +1,6 @@
 # 目錄
 
-- [第一章 零基礎關鍵灌輸篇](#第一章-零基礎灌輸篇)
+- [第一章 零基礎關鍵灌輸篇](#第一章-零基礎關鍵灌輸篇)
 - [第二章 開發好用工具篇](#第二章-開發好用工具篇)
 - [第三章 javascript 新手須知篇](#第三章-javascript新手須知篇)
 - [第四章 邏輯判斷篇](#第四章-邏輯判斷篇)
@@ -137,9 +137,9 @@ alert(3);
 
 ```js
 //等畫面元素下載完成後才執行，例如圖片
-windows.onload = function()(
-    alert(1);
-)
+window.onload = function () {
+  alert(1);
+};
 ```
 
 > 可在開發者工具的 Network 查看是否有效!
@@ -147,17 +147,17 @@ windows.onload = function()(
 ### Debug Console.log()
 
 ```js
-windows.onload = function()(
-   console.log("我到畫面上了");
-)
+window.onload = function () {
+  console.log('我到畫面上了');
+};
 ```
 
 > 訊息在開發者工具的 console 面板查看
 
 ```js
-windows.onload = function()(
-   console.error("發生錯誤了");
-)
+window.onload = function () {
+  console.error('發生錯誤了');
+};
 ```
 
 > 訊息在開發者工具的 console 面板查看(有紅色錯誤的警戒)
