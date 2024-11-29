@@ -777,12 +777,6 @@ closeBtn.addEventListener('click', function () {
 
 **forEach()  方法會將陣列內的每個元素，皆傳入並執行給定的函式一次。**
 
-> 引入資料
-
-> 將 for 迴圈改寫成 forEach
-
-> 試著用 forEach 寫出 filter 的效果
-
 用法:
 
 ```js
@@ -797,6 +791,14 @@ array.forEach(function (currentValue, index, array) {
 - index（可選）: 正在處理的元素的索引。
 - array（可選）: 正在操作的陣列本身。
 - thisArg（可選）: 執行回呼函數時 this 的值。
+
+**範例:**
+
+> 引入資料
+
+> 將 for 迴圈改寫成 forEach
+
+> 試著用 forEach 寫出 filter 的效果
 
 ```html
 <body>
