@@ -87,12 +87,15 @@ if (n == 1) {
 1. 先下載 VScode
 
 2. 在 VScode 裡安裝下列套件:
-   - chinese
-   - Monokai Dark Soda
-   - Live Server
-   - AutoFileName
-   - vscode-icons
-   - Copy filename
+   - 中文翻譯套件 Chinese
+   - 顏色樣式主題 Monokai Dark Soda
+   - 簡易 localhost 伺服器 Live Server
+   - 路徑選擇套件 AutoFileName
+   - 文件圖示 vscode-icons
+   - 復製擋案名 Copy filename
+   - 色碼高亮 Color Highlight
+   - 高版本 Js 提示 Babel ES6/ES7
+   - 不要加入版本控管 gitignore
 
 ### Chorme 開發著工具
 
