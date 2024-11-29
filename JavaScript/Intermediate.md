@@ -925,3 +925,215 @@ array.forEach(function (currentValue, index, array) {
 **this 指向: 對於 function 被哪個監聽所調用去指向那個監聽，不能放在 forEach 裡面!!**
 
 > 當 this 沒有指向被監聽的 function 時，會一律指向最外層的 window
+
+#### filter
+
+**filter() 方法會搜尋符合條件的資料然後返回再構成的新陣列。**
+
+用法:
+
+```js
+array.filter(callback(element, index, array), thisArg);
+```
+
+參數說明:
+
+- callback: 必需。用來測試每個陣列元素的函式。
+  - element: 當前被處理的元素。
+  - index: 可選，當前元素的索引。
+  - array: 可選，調用 filter 的陣列本身。
+- thisArg: 可選。執行回調函式時作為 this 的值。
+
+**範例:**
+
+```js
+var itemList = document.getElementsByClassName('itemList')[0];
+var user_money = document.getElementById('user_money');
+var user_age = document.getElementById('user_age');
+var user_sex = document.getElementById('user_sex');
+var html = '';
+var newData = data;
+
+// Render the content
+function DOMrender(arr) {
+  html = '';
+  itemList.innerHTML = '';
+  arr.forEach(function (item) {
+    html += '<ul class="tit2">';
+    html += '<li>' + item.name + '</li>';
+    html += '<li>' + item.money + '</li>';
+    html += '<li>' + item.age + '</li>';
+    html += '<li>' + item.sex + '</li>';
+    html += '</ul>';
+  });
+  itemList.innerHTML = html;
+}
+
+// Handle money filter
+function SeachDataMoney(value) {
+  var num = Number(value);
+  var arr = newData.filter(function (obj) {
+    return obj.money > num;
+  });
+  DOMrender(arr);
+}
+
+// Handle age filter
+function SeachDataAge(value) {
+  var num = Number(value);
+  var arr = newData.filter(function (obj) {
+    return obj.age > num;
+  });
+  DOMrender(arr);
+}
+
+// Handle gender filter
+function SeachDataSex(value) {
+  var arr = newData.filter(function (obj) {
+    if (value === 'no') {
+      return obj;
+    }
+    return obj.sex === value;
+  });
+  DOMrender(arr);
+}
+
+user_money.addEventListener('change', function () {
+  SeachDataMoney(this.value);
+});
+user_age.addEventListener('change', function () {
+  SeachDataAge(this.value);
+});
+user_sex.addEventListener('change', function () {
+  SeachDataSex(this.value);
+});
+
+DOMrender(newData);
+```
+
+#### every
+
+**every() 方法會檢查所有的陣列是否符合條件，只會回傳一個值 true 或 false 。**
+
+用法:
+
+```js
+array.every(callback(element, index, array), thisArg);
+```
+
+參數說明:
+
+- callback: 必需。用來測試每個陣列元素的函式。
+  - element: 當前被處理的元素。
+  - index: 可選，當前元素的索引。
+  - array: 可選，調用 every 的陣列本身。
+- thisArg: 可選。執行回調函式時作為 this 的值。
+
+**範例:檢查 checkbox 的每一個是否有勾選**
+
+```js
+var submit = document.getElementById('submit');
+
+function checkFn() {
+  var checkboxArr = [
+    document.getElementById('query1'),
+    document.getElementById('query2'),
+    document.getElementById('query3'),
+  ];
+  var ans = checkboxArr.every(function (item) {
+    return item.checked === true;
+  });
+  return ans;
+}
+
+function changeFn() {
+  var isChecked = checkFn();
+  submit.disabled = !isChecked;
+
+  // if(isChecked){
+  //     submit.disabled = false;
+  // }else{
+  //     submit.disabled = true;
+  // }
+}
+
+document.getElementById('query1').addEventListener('change', changeFn);
+document.getElementById('query2').addEventListener('change', changeFn);
+document.getElementById('query3').addEventListener('change', changeFn);
+changeFn();
+
+submit.addEventListener('click', function () {
+  alert('Success');
+});
+```
+
+#### map
+
+**map() 方法會透過函式內所回傳的值而組合成一個新陣列 。**
+
+用法:
+
+```js
+array.map(callback(element, index, array), thisArg);
+```
+
+參數說明:
+
+- callback: 必需。用來測試每個陣列元素的函式。
+  - element: 當前被處理的元素。
+  - index: 可選，當前元素的索引。
+  - array: 可選，調用 map 的陣列本身。
+- thisArg: 可選。執行回調函式時作為 this 的值。
+
+**範例:重組 array**
+
+```js
+var arr = [
+  {
+    name: 'Max',
+    sex: 'Male',
+  },
+  {
+    name: 'Alice',
+    sex: 'FeMale',
+  },
+  {
+    name: 'Chris',
+    sex: 'Male',
+  },
+  {
+    name: 'Martain',
+    sex: 'Male',
+  },
+  {
+    name: 'Bob',
+    sex: 'Male',
+  },
+];
+
+// ["MaxMale", "AliceFemale", "ChrisMale", "MartainMale", "BobMale"]
+
+var forArr = arr.map(function (obj) {
+  return obj.name + obj.sex;
+});
+
+var html = '';
+forArr.forEach(function (obj) {
+  html += '<li>' + obj + '</li>';
+});
+
+var itemBox = document.getElementById('itemBox');
+itemBox.innerHTML = html;
+```
+
+# `forEach` 和 `map` 的差異
+
+| 特徵                 | `forEach`                                                      | `map`                                              |
+| -------------------- | -------------------------------------------------------------- | -------------------------------------------------- |
+| **用途**             | 用於遍歷陣列並執行副作用（例如：輸出到 console、更新變數等）。 | 用於遍歷陣列並返回一個包含修改後元素的新陣列。     |
+| **返回值**           | 返回 `undefined`。                                             | 返回一個包含修改後元素的新陣列。                   |
+| **變更原陣列**       | 可以改變原陣列。                                               | 不會改變原陣列。                                   |
+| **是否可以鏈式調用** | 不可鏈式調用（因為返回 `undefined`）。                         | 可鏈式調用（返回新陣列，可以繼續鏈式調用）。       |
+| **回調函數參數**     | 提供當前元素、索引和值本身。                                   | 提供當前元素、索引和值本身。                       |
+| **適用情境**         | 當你只需要遍歷陣列並執行動作，而不需要返回結果時使用。         | 當你需要對每個陣列元素進行轉換並創建新陣列時使用。 |
+| **副作用**           | 常用於執行副作用，例如輸出或更新變數。                         | 不常用於副作用，主要用於創建新的陣列。             |
