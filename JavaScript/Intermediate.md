@@ -22,8 +22,10 @@
 - [第三章 非同步處理](#第三章-非同步處理)
   - [介紹 api](#課程-api)
   - [非同步介紹](#非同步介紹)
+  - [get 與 post](#get-與-post)
+  - [非同步工具 axios](#非同步工具axios)
   - [Json 與 FormData](#Json-與-FormData)
-  - [非同步資料動態渲染列表時做](#非同步資料動態渲染列表時做)
+  - [非同步資料動態渲染列表實作](#非同步資料動態渲染列表實作)
   - [常見的 HTTP 狀態碼](#常見的-HTTP-狀態碼)
   - [跨網域存取 CROS](#跨網域存取-CROS)
   - [instagram hashtag 搜尋頁](#instagram-hashtag-搜尋頁)
@@ -1356,4 +1358,476 @@ function Num(num) {
 
 var n = Num(5241522);
 console.log(n);
+```
+
+---
+
+# 第三章 非同步處理
+
+## 介紹 api
+
+> 前端跟後端溝通的一種手段
+
+[講解影片](#https://youtu.be/zvKadd9Cflc)
+
+## 非同步介紹
+
+> 若 js 由上而下執行，則為同步，若不是由上而下執行則為不同不
+
+**範例:**
+
+```js
+console.log('1');
+console.log('2');
+console.log('3');
+console.log('4');
+setTimeout(function () {
+  console.log('5');
+}, 2000);
+console.log('6');
+console.log('7');
+console.log('8');
+console.log('9');
+```
+
+## get 與 post
+
+**get:此方法會把資料帶到網址後面，以問號的形式帶入** => 不安全的行為(不是適合傳送)
+
+**post:需要有另一方去接收資料，若沒有會報錯**
+
+1. 資料不會秀在網址上面給別人看到
+
+2. 要看到資料要去 Network 面板，勾選 Preserve log 往上找就能看到，點頁面，點 header，下滑就看得見
+
+## 非同步工具 axios
+
+**下載指令:**
+
+```shell
+npm install axios
+```
+
+**CDN 載入**
+
+```html
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+```
+
+**範例:**測試看看 axios 是否同步
+
+```js
+console.log('1');
+
+axios
+  .get('./api/data.json')
+  .then(function (res) {
+    //沒有錯誤時會執行
+    console.log('get:', res);
+    console.log('2');
+  })
+  .catch(function (error) {
+    //有錯誤時會執行
+    console.error(error);
+  });
+
+console.log('3');
+```
+
+## Json 與 FormData
+
+**Json:**
+
+- JavaScript Object Notation (JSON) 為將結構化資料呈現為 JavaScript 物件的標準格式，常用於網站上的資料呈現。
+
+- JSON 是依照 JavaScript 物件語法的資料格式，雖然 JSON 是以 JavaScript 語法為基礎，但可獨立使用，且許多程式設計環境亦可讀取 (剖析) 並產生 JSON。
+
+- JSON 可能是物件或字串。當你想從 JSON 中讀取資料時，JSON 可作為物件；當要跨網路傳送 JSON 時，就會是字串。這不是什麼大問題 — JavaScript 提供全域 JSON 物件，其內的函式可進行切換。
+
+- JSON 物件可儲存於其自有的檔案中，基本上就是副檔名為 .json 的文字檔案。
+
+```json
+[
+  {
+    "idx": 1,
+    "name": "Jack",
+    "money": 12000,
+    "age": 12,
+    "sex": "Male"
+  },
+  {
+    "idx": 2,
+    "name": "Amy",
+    "money": 52000,
+    "age": 20,
+    "sex": "Female"
+  },
+  {
+    "idx": 3,
+    "name": "John",
+    "money": 150,
+    "age": 16,
+    "sex": "Male"
+  },
+  {
+    "idx": 4,
+    "name": "Alex",
+    "money": 360000,
+    "age": 35,
+    "sex": "Male"
+  },
+  {
+    "idx": 5,
+    "name": "Tom",
+    "money": 650,
+    "age": 19,
+    "sex": "Male"
+  },
+  {
+    "idx": 6,
+    "name": "Jane",
+    "money": 9999,
+    "age": 40,
+    "sex": "Female"
+  },
+  {
+    "idx": 7,
+    "name": "Emma",
+    "money": 10,
+    "age": 2,
+    "sex": "Female"
+  },
+  {
+    "idx": 8,
+    "name": "Ben",
+    "money": 500,
+    "age": 30,
+    "sex": "Male"
+  }
+]
+```
+
+```js
+var obj = {
+  idx: 1,
+  name: 'Jack',
+  money: 12000,
+  age: 12,
+  sex: 'Male',
+};
+```
+
+**FormData:**
+
+```js
+var obj = new FormData();
+obj.append('idx', 1);
+obj.append('name', 'Jack');
+obj.append('money', 12000);
+obj.append('age', 12);
+obj.append('sex', 'Male');
+```
+
+**傳送給後端**
+
+```js
+axios;.post('url',obj)
+.then(function(res){
+  console.log(res)
+})
+.catch(function(error){
+  console.error(error)
+})
+```
+
+> 分辨辦法，去看 F12，Network 頁面的 header 裡的 multipart 是什麼類型
+
+## 非同步資料動態渲染列表實作
+
+> 用 api 撈回資料的方式，把資料放在下拉式選單
+
+```js
+window.onload = function () {
+  var city = []; //儲存城市
+  var area = []; //儲存鄉鎮
+  var html = ''; //城市下拉
+  var areahtml = ''; //鄉鎮下拉
+
+  //拉取鄉鎮資料
+  axios
+    .get('./api/twzip.json')
+    .then(axiosCallBack)
+    .catch(function (error) {
+      console.log(error);
+    });
+  //拉取資料完成
+  function axiosCallBack(res) {
+    city = res.data.twzip.city;
+    renderCity(city);
+    SelectChange();
+  }
+  //產生城市下拉列表
+  function renderCity(city) {
+    city.forEach(function (item) {
+      html += '<option value="' + item.name + '">' + item.name + '</option>';
+    });
+    document.getElementById('city').innerHTML = html;
+    areaChange();
+  }
+  //執行抓取新的鄉鎮列表
+  function areaChange() {
+    var cit = document.getElementById('city').value;
+    var area = city.filter(function (item) {
+      return item.name === cit;
+    });
+    renderArea(area[0].area);
+  }
+
+  //產生鄉鎮下拉列表
+  function renderArea(arr) {
+    areahtml = '';
+    arr.forEach(function (item) {
+      areahtml +=
+        '<option value="' + item.name + '">' + item.name + '</option>';
+    });
+    document.getElementById('area').innerHTML = areahtml;
+  }
+
+  //監聽程式下拉列表 change 事件
+  function SelectChange() {
+    document.getElementById('city').addEventListener('change', function () {
+      areaChange();
+    });
+  }
+};
+```
+
+## 常見的 HTTP 狀態碼(restful API)
+
+[HTTP 狀態碼查詢](https://zh.wikipedia.org/wiki/HTTP%E7%8A%B6%E6%80%81%E7%A0%81)
+
+- 2xx 成功
+  - http 請求成功
+- 4xx 用戶端錯誤
+  - http 請求失敗，常見的可能是
+    - 404 找不到資源，或是 403 請求不符合規範
+- 5xx 伺服器錯誤
+  - 這類狀態碼 90% 代表了伺服器在處理請求的過程中有錯誤或者異常狀態發生，你就可以先去找後端，不是你的 code 寫錯！
+
+### 業界常見
+
+> 不會直接判斷外層的 status，而是會判斷 Body 裡面的
+
+```json
+{
+  "message": "Accept Request",
+  "status": 200,
+  "value": {
+    "name": "Jack",
+    "age": 20
+  }
+}
+
+{
+  "message": "Reject Request",
+  "status": 401,
+  "value": {
+   "The Account not exist!!"
+  }
+}
+```
+
+> 這時候前端要改成
+
+```js
+axios
+  .get('URL')
+  .then(function (res) {
+    if (res.data.status != '200') {
+      alert(res.data.message);
+    } else {
+      //處理成功的邏輯
+    }
+  })
+  .catch(function (error) {
+    console.error(error);
+  });
+```
+
+## 跨網域存取 CROS
+
+```js
+var url = 'https://www.vscinemas.com.tw/VsWeb/api/GetLstDicCinema';
+
+axios
+  .get(url)
+  .then(function (res) {
+    console.log('拿到資料:', res.data);
+  })
+  .catch(function (error) {
+    alert(error.response.data.msg);
+    console.error('發生錯誤 狀態碼不是200:', error.response.data.msg);
+  });
+```
+
+> 需要在相同網域才能存取資料
+
+## instagram hashtag 搜尋頁
+
+```html
+<body>
+  <div id="app">
+    <!-- seachOk -->
+    <div id="bar" class="">
+      <input
+        class="seachBar"
+        type="text"
+        placeholder="輸入想找的 instagram 圖片"
+      />
+    </div>
+
+    <div class="imgBox">
+      <div class="imgdiv"></div>
+    </div>
+
+    <a id="more">More</a>
+
+    <!-- pop照片 -->
+    <div class="pop">
+      <img class="popImg" src="" alt="" />
+    </div>
+
+    <!-- loading -->
+    <div class="loading">
+      <div class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+  <script src="./lib/BindValue.js"></script>
+  <script>
+    window.onload = function () {
+      var seachBar = document.getElementsByClassName('seachBar')[0];
+      var moreBtn = document.getElementById('more');
+      var loadingPage = document.getElementsByClassName('loading')[0];
+      var popPage = document.getElementsByClassName('pop')[0];
+
+      var keyword = ''; //搜尋的文字
+      var edges = null; //搜尋出來的照片
+      var baseUrl = ''; //api 的url
+      var img_html = ''; //圖片列表
+      var Loading = {
+        isOpem: false, //開啟loading
+      };
+      var pageInfo = {
+        has_next_page: false, //是否還有下一頁
+        end_cursor: '', //最後一頁的hash
+      };
+      var photoTag = {
+        pages: [], //存取目前有的照片
+      };
+
+      seachBar.addEventListener('keyup', function (e) {
+        if (e.keyCode !== 13) return;
+        if (keyword !== this.value) {
+          resetData();
+        }
+        keyword = this.value;
+        SearchHashTag(this.value);
+      });
+
+      moreBtn.addEventListener('click', function () {
+        SearchHashTag(keyword);
+      });
+
+      function SearchHashTag(keyword) {
+        Loading.isOpem = true;
+        baseUrl =
+          'https://www.instagram.com/explore/tags/' +
+          encodeURI(keyword) +
+          '/?__a=1';
+
+        if (pageInfo.has_next_page) {
+          baseUrl += '&max_id=' + pageInfo.end_cursor;
+        }
+
+        var arr = [];
+        axios
+          .get(baseUrl)
+          .then(function (res) {
+            pageInfo =
+              res.data.graphql.hashtag.edge_hashtag_to_media['page_info'];
+            edges = res.data.graphql.hashtag.edge_hashtag_to_media['edges'];
+
+            photoTag.pages = edges;
+            Loading.isOpem = false;
+          })
+          .catch(function (err) {
+            console.error(err);
+          });
+      }
+
+      // 重製資料
+      function resetData() {
+        img_html = '';
+        photoTag.pages = [];
+        document.getElementsByClassName('imgBox')[0].innerHTML = '';
+        document.getElementById('bar').classList.remove('seachOk');
+        moreBtn.style.display = 'none';
+      }
+
+      //如果資料有變動就重新更新畫面
+      BindValue(photoTag, 'pages', function (val) {
+        val.forEach(function (item, idx) {
+          img_html +=
+            '<div class="imgdiv" style="background-image: url(' +
+            item.node.display_url +
+            ')"></div>';
+        });
+
+        document.getElementsByClassName('imgBox')[0].innerHTML = img_html;
+
+        var imgdivArr = document.getElementsByClassName('imgdiv');
+
+        for (var s = 0; s < imgdivArr.length; s++) {
+          imgdivArr[s].addEventListener('click', function () {
+            var img = this.style.backgroundImage
+              .replace('url("', '')
+              .replace('")', '');
+            popPage.style.display = 'flex';
+            document.getElementsByClassName('popImg')[0].src = img;
+          });
+        }
+
+        if (val.length !== 0) {
+          document.getElementById('bar').classList.add('seachOk');
+          document.getElementById('more').style.display = 'block';
+          document.getElementsByClassName('imgBox')[0].style.display = 'flex';
+        }
+
+        if (!pageInfo.has_next_page) {
+          moreBtn.style.display = 'none';
+        }
+      });
+
+      // loading資料變動
+      BindValue(Loading, 'isOpem', function (bool) {
+        if (bool) {
+          loadingPage.style.display = 'flex';
+        } else {
+          loadingPage.style.display = 'none';
+        }
+      });
+
+      popPage.addEventListener('click', function () {
+        this.style.display = 'none';
+      });
+    };
+  </script>
+</body>
 ```
