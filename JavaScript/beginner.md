@@ -6,12 +6,12 @@
 - [第四章 邏輯判斷篇](#第四章-邏輯判斷篇)
   - [判斷式 if](#判斷式-if)
   - [判斷式 switch](#判斷式-switch)
-- [第五章 DOM 物件與事件篇](#第五章-DOM物件與事件篇)
-  - [獲取 DOM 物件](#獲取DOM物件)
-  - [function 介紹](#function介紹)
-  - [onclick 事件](#onclick事件)
-  - [操作 DOM 屬性](#操作DOM屬性)
-  - [操作 DOM style](#操作DOM-style)
+- [第五章 DOM 物件與事件篇](#第五章-DOM-物件與事件篇)
+  - [獲取 DOM 物件](#獲取-DOM-物件)
+  - [function 介紹](#function-介紹)
+  - [onclick 事件](#onclick-事件)
+  - [操作 DOM 屬性](#操作-DOM-屬性)
+  - [操作 DOM style](#操作-DOM-style)
   - [innerHTML & innerText](#innerhtml--innertext)
   - [常用的 window 方法](#常用的window方法)
   - [onmouseover & onmouseout](#onmouseover--onmouseout)
@@ -687,6 +687,8 @@ window.onload = function () {
 ```
 
 2. 05-14.js
+
+> this 指向: 對於 function 被哪個監聽所調用去指向那個監聽
 
 ```js
 window.onload = function () {

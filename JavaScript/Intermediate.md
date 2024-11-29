@@ -919,3 +919,7 @@ array.forEach(function (currentValue, index, array) {
   </script>
 </body>
 ```
+
+**this 指向: 對於 function 被哪個監聽所調用去指向那個監聽，不能放在 forEach 裡面!!**
+
+> 當 this 沒有指向被監聽的 function 時，會一律指向最外層的 window
