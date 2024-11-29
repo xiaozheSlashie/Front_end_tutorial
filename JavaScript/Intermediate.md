@@ -11,7 +11,14 @@
     - [filter](#filter)
     - [every](#every)
     - [map](#map)
-- [第二章 ](#第二章-進階字串處理)
+- [第二章 進階字串處理](#第二章-進階字串處理)
+  - [去除空白 trim()](#去除空白)
+  - [分割字串 slice()](#分割字串)
+  - [變化英文字母大小寫 toLocaleLowerCase(),toLocaleUpperCase() ](#變化英文字母大小寫)
+  - [字串反轉 split(),reverse().join()](#字串反轉)
+  - [字串取代 replace()](#字串取代)
+  - [取得字串位置 indexOf()](#取得字串位置)
+  - [數字千分位符號](#數字千分位符號)
 - [第三章 非同步處理](#第三章-非同步處理)
   - [介紹 api](#課程-api)
   - [非同步介紹](#非同步介紹)
@@ -1126,7 +1133,7 @@ var itemBox = document.getElementById('itemBox');
 itemBox.innerHTML = html;
 ```
 
-# `forEach` 和 `map` 的差異
+#### `forEach` 和 `map` 的差異
 
 | 特徵                 | `forEach`                                                      | `map`                                              |
 | -------------------- | -------------------------------------------------------------- | -------------------------------------------------- |
@@ -1137,3 +1144,216 @@ itemBox.innerHTML = html;
 | **回調函數參數**     | 提供當前元素、索引和值本身。                                   | 提供當前元素、索引和值本身。                       |
 | **適用情境**         | 當你只需要遍歷陣列並執行動作，而不需要返回結果時使用。         | 當你需要對每個陣列元素進行轉換並創建新陣列時使用。 |
 | **副作用**           | 常用於執行副作用，例如輸出或更新變數。                         | 不常用於副作用，主要用於創建新的陣列。             |
+
+---
+
+# 第二章 進階字串處理
+
+## 去除空白
+
+** trim 可以將頭尾的空格去除，常用再表單欄位幫助使用者防呆!**
+
+```html
+<body>
+  <div>
+    <input id="searchBar" type="text" />
+    <button id="submit">送出</button>
+  </div>
+
+  <script>
+    var searchBar = document.getElementById('searchBar');
+    var submit = document.getElementById('submit');
+
+    submit.addEventListener('click', function () {
+      var str1 = searchBar.value;
+      var str2 = searchBar.value.trim();
+
+      console.log('str1:', str1);
+      console.log('str2:', str2);
+    });
+  </script>
+</body>
+```
+
+## 分割字串
+
+**slice() 方法可以用來分割字串或陣列，並返回其中的一部分。這個方法並不會改變原來的字串或陣列，而是返回一個新的字串或陣列。**
+
+```js
+str.slice(beginIndex, endIndex);
+```
+
+- beginIndex：指定開始切割的位置（包含此位置）。
+- endIndex（可選）：指定切割的結束位置（不包含此位置）。如果省略此參數，則切割會一直到字串的結尾。
+
+```js
+var email = '1208966@gmail.com';
+
+// 取索引3 ~ 7之間的字串
+console.log(email.slice(3, 7));
+
+// 取索引7之後的所有字串
+console.log(email.slice(7));
+
+// 取索引 0 ~ "@" 的索引位置的字串
+// indexOf 取得查找比對相對應的索引位置，如果沒有回傳 -1
+console.log(email.slice(0, email.indexOf('@')));
+```
+
+## 變化英文字母大小寫
+
+- toLocaleLowerCase() 大寫轉小寫
+- toLocaleUpperCase() 小寫轉大寫
+
+> **當使用這 function 時，前面字串不能是 null 或 undefine!!不然會報錯**
+
+**範例一:請把輸入的英文字母都轉成小寫，並且欄位不可以沒有值**
+
+```js
+var searchBar = document.getElementById('searchBar');
+var submit = document.getElementById('submit');
+
+submit.addEventListener('click', function () {
+  var value = searchBar.value.trim();
+  var tlc = value.toLocaleLowerCase();
+  if (tlc === '') {
+    alert('欄位不可以空白');
+    return;
+  }
+  console.log(tlc);
+});
+```
+
+## 字串反轉
+
+> split() => 分割字串
+
+```js
+str.split(separator, limit);
+```
+
+- separator：用來分割字串的分隔符，可以是字串或正規表達式。如果不指定，split() 會將整個字串作為一個元素返回。
+- limit（可選）：限制返回的陣列元素的數量。
+
+```js
+var text = reverse('HelloMike!');
+console.log(txt.split('')); //切割出每個字變成array
+
+var str = 'apple,banana,cherry';
+
+// 以逗號分割字串
+var result = str.split(',');
+console.log(result); // 輸出: ["apple", "banana", "cherry"]
+```
+
+> reverse() => 反轉 array 裡面的每個物品
+
+```js
+let numbers = [1, 2, 3, 4, 5];
+
+// 反轉陣列
+let reversedNumbers = numbers.reverse();
+
+console.log(reversedNumbers); // 輸出: [5, 4, 3, 2, 1]
+console.log(numbers); // 輸出: [5, 4, 3, 2, 1]，原始陣列也被修改了
+```
+
+> join() => 反轉 array 裡面的每個物品
+
+```js
+arr.join([separator]);
+```
+
+- arr：要操作的陣列。
+- separator（可選）：用來分隔陣列元素的字串。如果不指定，默認使用逗號 ,。如果指定空字串 ""，則陣列元素會被緊密地連接在一起。
+
+** 範例:**
+
+```js
+function reverse(txt) {
+  return txt.split('').reverse().join('');
+}
+
+var text = reverse('HelloMike!');
+
+console.log(text);
+```
+
+## 字串取代
+
+> repace()
+
+```js
+str.replace(searchValue, newValue);
+```
+
+- searchValue：這是要查找的子字串，這個可以是字串或者是正則表達式。如果是字串，replace() 只會替換第一個匹配的子字串；如果是正則表達式，則可以根據正則的設定進行多次替換。
+- newValue：這是用來替換 searchValue 的字串。可以是普通字串，或者是包含參數的函數（詳見下面的範例）。
+- 原本字串並不會改變
+
+**範例:把 2019-01-01 換成 2019/01/01**
+
+```js
+var date = '2019-01-01';
+console.log(date.replace('-', '/'));
+console.log(date.replace(/-/g, '/')); //正規表達式:g代表全部=>後面會教
+```
+
+## 取得字串位置
+
+> indexOf() 是 JavaScript 中的一個字串方法，用來查找指定字串或字符在目標字串中的首次出現位置。如果找到，返回該字符或子字串的索引（位置）；如果未找到，則返回 -1。
+
+```js
+str.indexOf(searchValue, start);
+```
+
+- searchValue：這是你要查找的字串或字符。
+- start（可選）：從指定的索引位置開始查找。默認為 0，即從字串的起始位置開始查找。
+
+**範例:**
+
+```js
+var arr = ['mike', 'jacky', 'andy', 'ash', 'scars'];
+var str = '123@456789';
+
+console.log(arr.indexOf('andy'));
+console.log(str.indexOf('@'));
+```
+
+## 數字千分位符號
+
+**範例:讓數字在千分","**
+
+> 5241522 ->5,241,522
+
+步驟:
+
+1. 把數字變成字串
+
+2. 切字串變成陣列
+
+3. 用 forEach()每三個位置加','
+
+4. 把字串組和回去
+
+```js
+function Num(num) {
+  var n = num + '';
+  var numArr = n.split('').reverse();
+  var overArr = [];
+  var i = 0;
+  numArr.forEach(function (item) {
+    i++;
+    if (i > 3) {
+      i = 1;
+      overArr.push(',');
+    }
+    overArr.push(item);
+  });
+  overArr.reverse();
+  return overArr.join('');
+}
+
+var n = Num(5241522);
+console.log(n);
+```
