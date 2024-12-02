@@ -1827,7 +1827,7 @@ conosle.log(search.query.from);
 ```
 
 ```
-/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+\^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$\
 ```
 
 ## 匹配
@@ -1844,3 +1844,31 @@ document.getElementById('app').innerHTML = '<h3>' + txt + '</h3>';
 ```
 
 ## 模糊匹配
+
+**如果頭尾一樣中間不一樣時就可以用模糊匹配**
+
+```js
+/E([a-zA-Z]+)t/g;
+```
+
+- `()`: 表示式匹配到的內容可以被單獨得到
+- `[]`: 用於查找範圍內的字串
+- `a-zA-Z`: 所有的英文字母包括大小寫
+- `+`:匹配前一字元多次
+- g: 全部的內容比對
+
+```js
+var regex = /E([a-zA-Z]+)t/g;
+
+var str =
+  'ECMAScript Javscript EggCat E123456789t Eabcdefg ecmascripT Ecmascript';
+var txt = str.match(regex);
+
+var html = '';
+txt.forEach(function (item) {
+  html += '<li>' + item + '</li>';
+});
+document.getElementById('app').innerHTML = html;
+```
+
+[線上預覽工具](https://regex101.com/)
