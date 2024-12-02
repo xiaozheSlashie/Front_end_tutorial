@@ -1677,4 +1677,42 @@ axios
 
 ## 非同步載入共用組件
 
+**利用 axios 載入其他的 html**
+
+```js
+window.onload = function () {
+  var headerDOM = document.getElementById('header');
+  var footerDOM = document.getElementById('footer');
+
+  function getHeader() {
+    return axios.get('./components/header.html');
+  }
+  function getFooter() {
+    return axios.get('./components/footer.html');
+  }
+
+  axios.all([getHeader(), getFooter()]).then(
+    axios.spread(function (header, footer) {
+      headerDOM.innerHTML = header.data;
+      footerDOM.innerHTML = footer.data;
+    })
+  );
+};
+```
+
 ## 程式流程控管
+
+**當我們想控制哪個非同步先完成時，可以用:**
+
+```js
+axios.all([getApi1(), getApi2()]).then(
+  axios.spread(function (api1, api2) {
+    console.log(api1, api2);
+  })
+);
+```
+
+功能描述
+
+> axios.all：接收一個包含多個 Promise 的陣列，並等待所有 Promise 完成。<br>
+> axios.spread：用於展開 axios.all 傳回的結果，方便對每個回應進行單獨處理。<br>
