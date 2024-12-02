@@ -294,46 +294,46 @@ if (weather == '下雨') {
 **多個 if else 用法**
 
 ```js
-var breakfast = '麥香雞肉堡';
+var breakfast = 'McChicken Burger';
 
-if (breakfast == '麥香雞肉堡') {
-  alert('收你30元');
-} else if (breakfast == '厚切豬排堡') {
-  alert('收你85元');
-} else if (breakfast == '總匯蛋餅') {
-  alert('收你50元');
-} else if (breakfast == '玉米濃湯') {
-  alert('收你35元');
-} else if (breakfast == '捷克厚牛芝加哥堡') {
-  alert('收你75元');
+if (breakfast == 'McChicken Burger') {
+  alert('That will be $30.');
+} else if (breakfast == 'Thick-Cut Pork Burger') {
+  alert('That will be $85.');
+} else if (breakfast == 'Club Egg Pancake') {
+  alert('That will be $50.');
+} else if (breakfast == 'Corn Chowder') {
+  alert('That will be $35.');
+} else if (breakfast == 'Czech Beef Chicago Burger') {
+  alert('That will be $75.');
 } else {
-  alert('其它一律收你55元');
+  alert('For other items, it will be $55.');
 }
 ```
 
 ## 判斷式 switch
 
 ```js
-var breakfast = '玉米濃湯';
+var breakfast = 'Corn Chowder';
 
 switch (breakfast) {
-  case '麥香雞肉堡':
-    alert('收你30元');
+  case 'McChicken Burger':
+    alert('That will be $30.');
     break;
-  case '厚切豬排堡':
-    alert('收你85元');
+  case 'Thick-Cut Pork Burger':
+    alert('That will be $85.');
     break;
-  case '總匯蛋餅':
-    alert('收你50元');
+  case 'Club Egg Pancake':
+    alert('That will be $50.');
     break;
-  case '玉米濃湯':
-    alert('收你35元');
+  case 'Corn Chowder':
+    alert('That will be $35.');
     break;
-  case '捷克厚牛芝加哥堡':
-    alert('收你75元');
+  case 'Czech Beef Chicago Burger':
+    alert('That will be $75.');
     break;
   default:
-    alert('其它一律收你55元');
+    alert('For other items, it will be $55.');
     break;
 }
 ```
@@ -354,7 +354,7 @@ switch (breakfast) {
 <body>
   <div id="app">
     <h1>HISKIO</h1>
-    <a id="Btn" href="javascript:;"> > 馬上觀看最新課程</a>
+    <a id="Btn" href="javascript:;"> > Watch the latest course now!</a>
   </div>
 
   <script>
@@ -373,7 +373,7 @@ switch (breakfast) {
 <body>
   <div id="app">
     <h1>HISKIO</h1>
-    <a class="Btn" href="javascript:;"> > 馬上觀看最新課程</a>
+    <a class="Btn" href="javascript:;"> > Watch the latest course now!</a>
   </div>
   <script>
     console.log(document.getElementsByClassName('Btn')[0]);
@@ -393,7 +393,7 @@ switch (breakfast) {
 <body>
   <div id="app">
     <h1>HISKIO</h1>
-    <a class="Btn" href="javascript:;"> > 馬上觀看最新課程</a>
+    <a class="Btn" href="javascript:;"> > Watch the latest course now!</a>
   </div>
   <script>
     console.log(document.getElementsByTagName('h1')[0]);
@@ -441,7 +441,7 @@ logHello();
 <body>
   <div id="app">
     <h1>HISKIO</h1>
-    <a id="Btn" href="javascript:;"> > 馬上觀看最新課程</a>
+    <a id="Btn" href="javascript:;"> > Watch the latest course now!</a>
   </div>
   <script>
     function Welcone() {
@@ -461,9 +461,9 @@ logHello();
   <div id="app">
     <h1 id="title">HISKIO</h1>
     <div class="btnbox">
-      <a id="fontSizeBig_btn" href="javascript:;">放大</a>
-      <a id="fontSizeSmall_btn" href="javascript:;">縮小</a>
-      <a id="fontSizeNormal_btn" href="javascript:;">正常</a>
+      <a id="fontSizeBig_btn" href="javascript:;">Zoom out</a>
+      <a id="fontSizeSmall_btn" href="javascript:;">Zoom in</a>
+      <a id="fontSizeNormal_btn" href="javascript:;">Normal</a>
     </div>
   </div>
 </body>
