@@ -33,7 +33,7 @@
   - [程式流程控管](#程式流程控管)
 - [第五章 網址篇](#第五章-網址篇)
   - [網址轉址與重整](#網址轉址與重整)
-  - [開心視窗](#開心視窗)
+  - [開新視窗](#開新視窗)
   - [網址 GET 參數](#網址GET參數)
   - [轉址帶參數注意事項](#轉址帶參數注意事項)
 - [第六章 正規表達式入門](#第六章-正規表達式入門)
@@ -1716,3 +1716,94 @@ axios.all([getApi1(), getApi2()]).then(
 
 > axios.all：接收一個包含多個 Promise 的陣列，並等待所有 Promise 完成。<br>
 > axios.spread：用於展開 axios.all 傳回的結果，方便對每個回應進行單獨處理。<br>
+
+---
+
+# 第五章 網址篇
+
+## 網址轉址與重整
+
+**reload Page:**
+
+```js
+window.location.reload();
+```
+
+**Go to another page or url**
+
+```js
+window.location.href = 'url';
+```
+
+**Go to another page or url but didn't have back page**
+
+```js
+window.location.replace = 'url';
+```
+
+```html
+<body>
+  <button id="btn">點擊</button>
+  <script>
+    document.getElementById('btn').addEventListener('click', function () {
+      // 本地重整
+      window.location.reload();
+
+      // 轉址
+      window.location.href = 'open.html';
+
+      // 轉址 (但是不會有上一頁)
+      window.location.replace('open.html');
+    });
+  </script>
+</body>
+```
+
+## 開新視窗
+
+**reload Page:**
+
+```js
+window.open('url', '_blank', 'height=400, width=400');
+```
+
+=> 可以開啟新視窗，指定長寬
+
+```js
+document.getElementById('btn').addEventListener('click', function () {
+  window.open('https://www.google.com.tw/', '_blank', 'height=400, width=400');
+});
+```
+
+## 網址 GET 參數
+
+```js
+new Url();
+```
+
+=> 把網址後面的參數轉成物件
+
+```js
+// ?name=mike&age=12
+var search = new Url(window.location.search);
+console.log(search.query);
+```
+
+## 轉址帶參數注意事項
+
+**若要帶參數一起過去新的網址**
+
+```js
+// ?name=mike&age=12
+console.log(window.location.search);
+document.getElementById('btn').addEventListener('click', function () {
+  window.location.href = 'search.html' + window.location.search;
+});
+```
+
+**要知道是哪個網址來的**
+
+```js
+var search = new Url(window.location.search);
+conosle.log(search.query.from);
+```
