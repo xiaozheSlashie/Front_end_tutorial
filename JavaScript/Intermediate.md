@@ -39,7 +39,9 @@
 - [第六章 正規表達式入門 Regular Expression](#第六章-正規表達式入門)
   - [匹配](#匹配)
   - [模糊匹配](#模糊匹配)
-  - [全域變數與區域變數](#全域變數與區域變數)
+  - [檢查是否輸入大寫英文](#檢查是否輸入大寫英文)
+  - [修飾符](#修飾符)
+  - [頭尾](#頭尾)
 - [第七章 ES6 升級指南](#第七章-ES6升級指南)
 - [第八章 javaScript 模組化入門篇](#第八章-javaScript模組化入門篇)
 - [第九章 javaScript 矯正姿勢篇](#第九章-javaScript矯正姿勢篇)
@@ -1872,3 +1874,167 @@ document.getElementById('app').innerHTML = html;
 ```
 
 [線上預覽工具](https://regex101.com/)
+
+## 檢查是否輸入大寫英文
+
+**檢查的正規式 fun 要使用:**
+
+```js
+var regex = /[A-Z]/g;
+const value = 'MIKE';
+const res = regex.test(value);
+```
+
+> regex: 放正規式的規則
+> .test: 則是看是否比對符合，若符合會回傳 true，反之為 false
+> value: 放要比對的值
+
+```html
+<body>
+  <div>
+    <h1>請輸入你的英文名字</h1>
+    <input id="searchBar" type="text" placeholder="輸入大寫的英文字母" />
+    <button id="submit">送出</button>
+  </div>
+
+  <script>
+    var searchBar = document.getElementById('searchBar');
+    var submit = document.getElementById('submit');
+    var regex = /[A-Z]/g;
+
+    submit.addEventListener('click', function () {
+      var value = searchBar.value.trim();
+      if (value === '') {
+        alert('欄位不可以空白');
+        return;
+      }
+
+      if (regex.test(value) === false) {
+        alert('請輸入大寫英文字母');
+        return;
+      }
+
+      alert('輸入成功');
+    });
+  </script>
+</body>
+```
+
+## 修飾符
+
+**想把大小寫也模糊比對**
+
+```js
+/ECMAScript/gi;
+```
+
+> 在 g(global)後面增加 i(insensitive)，就可以把大小寫給模糊掉
+
+**範例:**
+
+```js
+var regex = /ECMAScript/gi;
+var str =
+  'ECMAScript Javscript EggCat E123456789t Eabcdefg ecmascripT Ecmascript';
+var txt = str.match(regex);
+
+var html = '';
+txt.forEach(function (item) {
+  html += '<li>' + item + '</li>';
+});
+document.getElementById('app').innerHTML = html;
+```
+
+## 頭尾
+
+**若只想指定開頭，可以使用:`^`**
+
+```js
+/^air/;
+```
+
+**若只想指定結尾，可以使用:`$`**
+
+```js
+/air$/;
+```
+
+**若想指定開頭和結尾，中間任何元素都不管，可以使用:`.*`**
+
+```js
+/^a.*e$/;
+```
+
+> `.`: 代表特殊字符
+
+> `*`: 代表全部
+
+> `.*`: 只全部的字符，不管是`%#@&.`都會被比對出來
+
+**因為在正規表達裡`.`代表特殊字符，所以如果要變成字串使用需在前面加`\`**
+
+```js
+/^.*@gmail\.com$/;
+```
+
+> `.`才會當成字串去比對
+
+**範例 1:**
+
+1. 比對開頭是 air
+
+2. 比對尾巴是 er
+
+3. 比對開頭是 air，尾巴是 er
+
+```js
+var strArr = [
+  'airline',
+  'banner',
+  'apple',
+  'cat',
+  'dog',
+  'applepay',
+  'linerair',
+  'airplane',
+  'wayair',
+  'habit',
+];
+var regexStart = /^air/;
+var strfilter = strArr.filter(function (item) {
+  return regexStart.test(item);
+});
+console.log('Start:', strfilter);
+
+var regexEnd = /er$/;
+var endfilter = strArr.filter(function (item) {
+  return regexEnd.test(item);
+});
+console.log('End:', endfilter);
+
+var regexMid = /^a.*e$/;
+var midfilter = strArr.filter(function (item) {
+  return regexMid.test(item);
+});
+console.log('Mid:', midfilter);
+```
+
+**範例 2:請找出為 gmail 的帳號**
+
+```js
+var mail = [
+  'a123@gmail.com',
+  'tesst@hotmail.com',
+  'n789@gmail.com',
+  'abcdef@yahoo.com',
+  '55555@gmail.com',
+  '1245@hotmail.com',
+  'abc123@hotmail.com',
+];
+var regex = /^.*@gmail\.com$/;
+var gmail = mail.filter(function (item) {
+  return item.match(regex);
+});
+
+console.log(gmail);
+```
