@@ -42,8 +42,17 @@
   - [檢查是否輸入大寫英文](#檢查是否輸入大寫英文)
   - [修飾符](#修飾符)
   - [頭尾](#頭尾)
+  - [方括號與大括號](#方括號與大括號)
+  - [使用網路上現有的正規式表達法](#使用網路上現有的正規式表達法)
 - [第七章 ES6 升級指南](#第七章-ES6升級指南)
-- [第八章 javaScript 模組化入門篇](#第八章-javaScript模組化入門篇)
+  - [let 與 const](#let-與-const)
+  - [解構賦值](#解構賦值)
+  - [展開運算子](#展開運算子)
+    - [array][#array]
+    - [object][#object]
+  - [字串模板](#字串模板)
+  - [箭頭涵式](#箭頭涵式)
+  - [target 與 currentTarget](#target-與-currentTarget)
 - [第九章 javaScript 矯正姿勢篇](#第九章-javaScript矯正姿勢篇)
 
 ---
@@ -2037,4 +2046,423 @@ var gmail = mail.filter(function (item) {
 });
 
 console.log(gmail);
+```
+
+## 方括號與大括號
+
+**前面數字指定四個，可以用{4}來表示**
+
+```js
+/^([0-9]{4})/;
+```
+
+> 因為`/`為政則表達的結尾和開頭，若要單純判斷`/`的字串，需在前面加一個`\`
+
+**範例: **
+
+1. 找出符合正規日期的字串
+2. 把符合正規日期的字串的`/`換成`-`
+3. 並且嵌入到 ul 裡面
+
+```js
+var Datestr = [
+  '2006/02/03',
+  'test/07/sd',
+  '2016/05/10',
+  '1998/03/07',
+  '12345/23/45678',
+  '1234/23/45678',
+  '12345/23/45',
+];
+
+var regex = /^([0-9]{4})\/([0-9]{2})\/([0-9]{2})$/;
+
+var html = '';
+var date = Datestr.filter(function (date) {
+  return date.match(regex);
+})
+  .map(function (item) {
+    return item.replace(/\//g, '-');
+  })
+  .forEach(function (obj) {
+    html += '<li>' + obj + '</li>';
+  });
+
+document.getElementById('app').innerHTML = html;
+
+console.log(date);
+```
+
+## 使用網路上現有的正規式表達法
+
+```js
+RegExp.test(str);
+```
+
+> 字串是否符合正則表達式規則，如果符合回傳 true 沒符合 false
+
+```js
+RegExp.exec(str);
+```
+
+> 字串是否符合正則表達式規則，如果符合回傳匹配結果，沒符合回傳 null
+
+```js
+String.replace(reg, str);
+```
+
+> 替換與正則表達式匹配的子串
+
+```js
+String.match(reg);
+```
+
+> 在字串方法內使用正則表達式來找到一個或是多個匹配的結果
+
+```js
+String.split(reg);
+```
+
+> 我們經常使用 split("")把字串分割成陣列，複雜的分割也可以使用正則表達式來解決
+
+```js
+String.search(reg);
+```
+
+> 在字串方法內使用正則表達式來匹配字串，不符合回傳-1，符合回傳第一個索引，不支援 g，不支援全局使用
+
+**一般常見用法:**
+
+```js
+/^[a-zA-Z0-9]*$/;
+```
+
+> 檢查字串只能有文字與數字
+
+```js
+/^[a-zA-Z]*$/;
+```
+
+> 檢查字串只能有文字
+
+```js
+/^[0-9]*$/;
+```
+
+> 檢查字串只能有數字
+
+```js
+/^((0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2})*$/;
+```
+
+> 檢查日期型態 (MM/DD/YYYY)
+
+```js
+/^((19|20)?[0-9]{2}[- /.](0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01]))*$/;
+```
+
+> 檢查日期型態 (YYYY/MM/DD)
+
+```js
+/^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4})*$/;
+```
+
+> Email 檢查
+
+```js
+/^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))*$/;
+```
+
+> 檢查 IP 位址
+
+```js
+/^(?=^.{8,}$)((?=.*[A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z]))^.*$/;
+```
+
+> 檢查密碼：密碼長度必須有八碼，並且包含至少一個小寫字母與一個大寫字母和一個數字
+
+```js
+/^(((http|https|ftp):\/\/)?([[a-zA-Z0-9]\-\.])+(\.)([[a-zA-Z0-9]]){2,4}([[a-zA-Z0-9]\/+=%&_\.~?\-]*))*$/;
+```
+
+> 檢查網址
+
+# 第七章 ES6 升級指南
+
+## let 與 const
+
+> let 的作用域範圍是再大括號內 { }
+
+> const 則是常數，是不可以再被修改的變數
+
+```js
+//  let
+console.log(a);
+if (true) {
+  var a;
+}
+
+console.log(b);
+if (true) {
+  let b;
+}
+// -------------------------
+
+// const
+const str = 'MIKE';
+str = 'ANDY';
+```
+
+> 非同步環境下用 for 迴圈取得變數的值，只能用 let 不能用 var
+
+```js
+for (var i = 0; i < 5; i++) {
+  setTimeOut(function () {
+    console.log(i);
+  }, 1000);
+}
+```
+
+> console.log 出來的值只有`5`
+
+```js
+for (let i = 0; i < 5; i++) {
+  setTimeOut(function () {
+    console.log(i);
+  }, 1000);
+}
+```
+
+> console.log 出來的值才是`1,2,3,4,5`
+
+## 解構賦值
+
+```js
+let data = {
+  name: 'mike',
+  age: 12,
+  time: '2019/04/01',
+};
+
+var name = data.name;
+var age = data.age;
+var time = data.time;
+
+// --------------------------------------------
+
+function dataSet(obj) {
+  let { name, age, time } = obj;
+  return {
+    name = name + '123',
+    age,
+    title,
+  };
+}
+
+let objs = dataSet(data);
+
+console.log(objs)
+
+// -----------------------------------------------
+
+const { name, age, time } = data;
+
+function Test(name, age, title) {
+  return {
+    name,
+    age,
+    title,
+  };
+}
+
+console.log(Test('jacky', 30, 'manager'));
+```
+
+## 展開運算子
+
+### array
+
+**把兩個 array 合併成一個 array**
+
+1. 使用 concat()合併
+
+```js
+let arr3 = arr1.concat(arr2);
+```
+
+2. 使用展開運算子合併
+
+```js
+let arr3 = [...arr1, ...arr2];
+```
+
+**範例:**
+
+```js
+let arr1 = [1, 2, 3, 4];
+let arr2 = ['a', 'b', 'c', 'd'];
+
+// let arr3 = arr1.concat(arr2);
+let arr3 = [...arr1, ...arr2];
+
+console.log(arr3);
+```
+
+### object
+
+**把兩個 array 合併成一個 array**
+
+1. 使用 assign()合併
+
+```js
+let obj3 = Object.assign(obj1, obj2);
+```
+
+2. 使用展開運算子合併
+
+```js
+let obj3 = { ...obj1, ...obj2 };
+```
+
+**範例:**
+
+```js
+let obj1 = {
+  name: 'mike',
+};
+let obj2 = {
+  age: 12,
+  title: '前端工程師',
+};
+
+// let obj3 = Object.assign(obj1, obj2);
+let obj3 = { ...obj1, ...obj2 };
+
+console.log(obj3);
+```
+
+## 字串模板
+
+**範例(ES5):**
+
+```js
+const name = 'mike';
+const mail = '1208966@gmail.com';
+
+(document.getElementById('title').innerHTML = '姓名' + name +', 信箱' + mail;
+
+var html = '';
+html += '<ul>';
+html += '<li>' + name + '</li>';
+html += '<li>' + mail + '</li>';
+html += '<ul>';
+document.getElementById('title').innerHTML = html;
+
+//ES6;
+
+```
+
+**範例(ES6):**
+
+```js
+const name = 'mike';
+const mail = '1208966@gmail.com';
+
+document.getElementById('title').innerHTML = `姓名:${name}, 信箱:${mail}`;
+const html = `
+    <ul>
+        <li>${name}</li>
+        <li>${mail}</li>
+    </ul>
+`;
+document.getElementById('title').innerHTML = html;
+```
+
+## 箭頭涵式
+
+**原本的 function 寫法**
+
+```js
+document.getElementById('btn').addEventListener('click', function (e) {
+  console.log(this);
+  console.log(e.target);
+});
+```
+
+**箭頭涵式 寫法**
+
+```js
+document.getElementById('btn').addEventListener('click', (e) => {
+  console.log(this); //沒有this這東西，若使用=>涵式則會指到window
+  console.log(e.target);
+});
+```
+
+**範例:用箭頭涵式使用 filter，找尋 sex 是 Male 的資料**
+
+```js
+//原先寫法
+
+const res = data.filter(function (item) {
+  return item.sex === 'Male';
+});
+
+//箭頭涵式寫法
+
+const res = data.filter((item) => item.sex === 'Male');
+console.log(res);
+```
+
+**一般涵式寫法**
+
+```js
+// ES5
+function Add(a, b) {
+  return a + b;
+}
+console.log(Add()); // NaN
+console.log(Add(2, 3)); // 5
+
+// ES6
+const Add2 = (a = 1, b = 2) => {
+  return a + b;
+};
+console.log(Add2()); // 3
+console.log(Add2(5, 3)); // 8
+```
+
+**只要是箭頭涵式 this 就不會指向外層會直接指向 window**
+
+## target 與 currentTarget
+
+> target => 事件的觸發者
+
+> currentTarget => 事件的真正監聽者。
+
+```html
+<body>
+   <div class="link">
+      <p>milk</p>
+      <p>andy</p>
+      <p>jack</p>
+    <div>
+  <script>
+    document.getElementById('link').addEventListener('click', (e) => {
+      console.log(e.target);
+      console.log(e.currentTarget);
+    });
+  </script>
+</body>
+```
+
+> 如果今天滑鼠放到文字上面點擊，那這時候的 target 的 log 會顯示點擊到的物件是 `<p>mike</p>`
+
+> 而 currentTarget 的 log 會顯示 `<div class="link"><div>`，這就是 target 跟 currentTarget 的差異，所以在選擇上面可以依照情境來選擇，課程中因為是使用 button，所以我們用 target 是沒甚麼問題的，如果是點擊內容比較複雜的元件，那同學可以考慮用 currentTarget 來抓取事件真正的監聽對象。
+
+> 額外補充一個小知識，其原因是因為我們的滑鼠放在 DOM 上面操作會穿透，所以它會觸發 click 事件，事件打穿到裡面的 p 標籤，所以我們可以使用 pointer-events: none; 來禁止該物件可以被觸發，就可以避免這問題
+
+```css
+.link > p {
+  pointer-events: none;
+}
 ```
