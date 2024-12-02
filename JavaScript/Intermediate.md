@@ -36,9 +36,9 @@
   - [開新視窗](#開新視窗)
   - [網址 GET 參數](#網址GET參數)
   - [轉址帶參數注意事項](#轉址帶參數注意事項)
-- [第六章 正規表達式入門](#第六章-正規表達式入門)
-  - [while 迴圈](#while迴圈)
-  - [for 迴圈](#for迴圈)
+- [第六章 正規表達式入門 Regular Expression](#第六章-正規表達式入門)
+  - [匹配](#匹配)
+  - [模糊匹配](#模糊匹配)
   - [全域變數與區域變數](#全域變數與區域變數)
 - [第七章 ES6 升級指南](#第七章-ES6升級指南)
 - [第八章 javaScript 模組化入門篇](#第八章-javaScript模組化入門篇)
@@ -1300,6 +1300,8 @@ console.log(date.replace('-', '/'));
 console.log(date.replace(/-/g, '/')); //正規表達式:g代表全部=>後面會教
 ```
 
+[第六章 正規表達式入門](#第六章-正規表達式入門)
+
 ## 取得字串位置
 
 > indexOf() 是 JavaScript 中的一個字串方法，用來查找指定字串或字符在目標字串中的首次出現位置。如果找到，返回該字符或子字串的索引（位置）；如果未找到，則返回 -1。
@@ -1807,3 +1809,38 @@ document.getElementById('btn').addEventListener('click', function () {
 var search = new Url(window.location.search);
 conosle.log(search.query.from);
 ```
+
+---
+
+# 第六章 正規表達式入門
+
+**(Regular Expression):正規表示式是電腦科學的一個概念，使用單個字串來描述、符合一系列符合某個句法規則的字串。**
+
+[線上測試工具](https://regexper.com/)
+[正規範例](#字串取代)
+
+=> 正規表達法寫法，頭尾都要有/，/之間裝的是比對的值
+
+```js
+/-/; //只會找第一個是'-'，之後就不會再找
+/-/g; //g是全部的意思
+```
+
+```
+/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+```
+
+## 匹配
+
+**用正規式找出有'ECMAScript'的字樣後取代成'@JS@'**
+
+```js
+var regex = /ECMAScript/g;
+var str =
+  'ECMAScript is a scripting-language specification standardized by Ecma International in ECMA-262 and ISO/IEC 16262. It was created to standardize JavaScript, so as to foster multiple independent implementations. JavaScript has remained the best-known implementation of ECMAScript since the standard was first published, with other well-known implementations including JScript and ActionScript.ECMAScript is commonly used for client-side scripting on the World Wide Web, and it is increasingly being used for writing server applications and services using Node.js.';
+var txt = str.replace(regex, '@JS@');
+
+document.getElementById('app').innerHTML = '<h3>' + txt + '</h3>';
+```
+
+## 模糊匹配
