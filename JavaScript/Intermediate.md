@@ -53,6 +53,7 @@
   - [字串模板](#字串模板)
   - [箭頭涵式](#箭頭涵式)
   - [target 與 currentTarget](#target-與-currentTarget)
+- [第八章 javaScript 模組化入門](#第八章-javaScript模組化入門)
 - [第九章 javaScript 矯正姿勢篇](#第九章-javaScript矯正姿勢篇)
 
 ---
@@ -2466,3 +2467,63 @@ console.log(Add2(5, 3)); // 8
   pointer-events: none;
 }
 ```
+
+# 第八章 javaScript 模組化入門
+
+![模組圖示](../img/01.png)
+
+Step1: 下載 nodesjs(LTS 版本)
+
+[下載網址](https://nodejs.org/zh-tw)
+
+Step2: 安裝 NVM
+
+[安裝網址](https://github.com/coreybutler/nvm-windows/releases)
+
+![選擇](../img/02.png)
+
+Step3: 檢查是否有安裝完成
+
+```shell
+nvm -v
+```
+
+**有關 nvm 的指令**
+
+```shell
+nvm list
+```
+
+查看有哪些 Node 版本可以裝
+
+```shell
+nvm list available
+```
+
+安裝指定的 Node 版本
+
+```shell
+nvm install v22.11.0
+```
+
+指定 Node 版本
+
+```shell
+nvm use v22.11.0
+```
+
+# 第九章 javaScript 矯正姿勢篇
+
+> 用更合理的方式寫 JavaScript
+
+[Airbnb  英文版](https://github.com/airbnb/javascript)
+
+[Airbnb  中文版](https://github.com/sivan/javascript-style-guide/blob/master/es5/README.md)
+
+## 如何簡單去規劃程式架構
+
+1. 將重複的邏輯拆開
+2. 盡量將變數變成私有變數，除了全域會用的的以外
+3. 保持進入點，確保程式流程正確
+4. 不要真的沒事物件導向程式，先把 function 結構拆開比較重要
+5. 不要寫多個主程式在頁面載入，會導致流程錯誤
