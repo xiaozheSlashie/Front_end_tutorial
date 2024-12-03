@@ -9,6 +9,14 @@
   - [public 與 assets](#public-與-assets)
   - [Components and Auto Imports](#Components-and-Auto-Imports)
   - [Setting Global](#Setting Global)
+  - [Composables and Auto Imports](#Composables-and-Auto-Imports)
+  - [plugins](#plugins)
+  - [Nuxt3 Server Side Rendering](#Nuxt3-Server-Side-Rendering)
+  - [動態 Router 配置](#動態-Router-配置)
+  - [useRouter-and-useRoute](#useRouter-and-useRoute)
+  - [開發階段啟動 https 憑證](#開發階段啟動-https-憑證)
+  - [API 跨網域處理](#API-跨網域處理)
+  - [pinia 安裝](#pinia-安裝)
 
 - [統整](#統整)
 
@@ -102,3 +110,369 @@ npx nuxi add component Home
 
   - 例如:footer 資料夾裡的 Btn.vue
   - 引入:`<footerBtn/>`
+
+## Setting Global(用了，其他沒有設定的組件都要自行 import 進去)
+
+**在 nuxt.config.ts 裡加入**
+
+```js
+export default defineNuxtConfig({
+  components: {
+    dirs: [
+      {
+        path: '~/components/global',
+        global: true,
+      },
+    ],
+  },
+});
+```
+
+## Composables & Auto Imports
+
+```shell
+npx nuxi add composable addCount
+```
+
+**若是 ts 自行改成 js**
+
+1. 在 composables/addCount.js 的檔案裡
+
+```js
+export const useAddCount = () => {
+  const count = ref(0);
+  const add = () => (count.value += 1);
+  return {
+    count,
+    add,
+  };
+};
+```
+
+2. 在要用的.vue 的檔案裡
+
+```vue
+<script setup>
+const data = useAddCount();
+</script>
+<template>
+  <div>
+    <h1>{{ data.count }}</h1>
+    <button @click="data.add">plus</button>
+  </div>
+</template>
+```
+
+> 直接引入即可，不需要 import
+
+## plugins
+
+```shell
+npx nuxi add plugin hello
+```
+
+**若是 ts 自行改成 js**
+
+### provide
+
+**使用 plugins 注入方法**
+
+1. 在 plugins/hello.js 的檔案裡
+
+```js
+export default defineNuxtPlugin((nuxtApp) => {
+  return {
+    provide: {
+      hello: (msg) => `Hello ${msg}!`,
+    },
+  };
+});
+```
+
+2. 在要用的.vue 的檔案裡
+
+```vue
+<script setup>
+const { $hello } = useNuxtApp();
+</script>
+<template>
+  <div>
+    <h1>
+      {{ $hello('Mike') }}
+    </h1>
+  </div>
+</template>
+```
+
+### directive
+
+**使用 plugins 自定義模板語法 ( directive )**
+
+1. 下載 dayjs 套件
+
+```shell
+npm install dayjs --save
+```
+
+2. 在 plugins/timeformat.js 的檔案裡
+
+```js
+import dayjs from 'dayjs';
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.vueApp.directive('timeformat', {
+    mounted(el, binding) {
+      const time = dayjs(binding.value).format('YYYY年MM月DD日');
+      el.innerText = time;
+    },
+  });
+});
+```
+
+3. 在要用的.vue 的檔案裡
+
+```vue
+<template>
+  <h1 v-timeformat="'2021-09-16T01:52:45.780Z'"></h1>
+</template>
+```
+
+### use
+
+**使用 plugins 搭配其他第三方 Vue3 套件使用**
+
+1. 安裝套件
+
+```shell
+npm install v-calendar@next @popperjs/core
+```
+
+2. 在 plugins/calendar.client.js 的檔案裡
+
+```js
+import VCalendar from 'v-calendar';
+import 'v-calendar/style.css';
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.vueApp.use(VCalendar);
+});
+```
+
+3. 在要用的.vue 的檔案裡
+
+```vue
+<script setup>
+const date = ref(new Date());
+</script>
+<template>
+  <div>
+    <ClientOnly>
+      <VDatePicker v-model="date" />
+    </ClientOnly>
+  </div>
+</template>
+```
+
+### 補充
+
+> 可以在檔名中間使用 .server 或 .client 來決定要 server 端或 client 端載入插件。
+
+- hello.client.js
+
+- hello.server.js
+
+## Nuxt3 Server Side Rendering
+
+### useFetch
+
+```js
+const { data } = await useFetch('https://api.nuxtjs.dev/mountains');
+```
+
+### useAsyncData
+
+```js
+const { data } = await useAsyncData('userInfo', () =>
+  $fetch('https://api.nuxtjs.dev/mountains')
+);
+
+async function handleFormSubmit() {
+  const res = await $fetch('/api/submit', {
+    method: 'POST',
+    body: {
+      // My form data
+    },
+  });
+}
+
+const handleFormSubmit = async () => {
+  const res = await $fetch('/api/submit', {
+    method: 'POST',
+    body: {
+      // My form data
+    },
+  });
+};
+```
+
+> key ：唯一的值，防止在 server 端和 client 端觸發兩次資料獲取，可帶可不帶，不帶的話會為自動幫你生成一個對應檔案名和編號的唯一 key，但是會建議都要帶。
+
+**$fetch**
+
+> 以前我們會需要自己使用第三方的套件去處理非同步，現在 Nuxt 整合 ofetch ，提供一個叫做 $fetch 方法，讓我們可以在 server 與 client 處理非同步。
+
+### refresh 刷新資料
+
+**可以透過 useAsyncData 回傳的 refresh 方法來進行刷新。**
+
+- data：回傳的資料。
+- pending：一個 Boolean，跟你說非同步是否完成了。
+- refresh：可用於刷新函數返回的資料的 function。
+- error：如果非同步失敗，回傳錯誤相關的資料。
+
+```vue
+<script setup>
+const { data, pending, error, refresh } = await useAsyncData('userInfo', () =>
+  $fetch('https://api.nuxtjs.dev/mountains')
+);
+</script>
+
+<template>
+  <div>
+    <button @click="refresh">refresh</button>
+    <h1>
+      {{ data }}
+    </h1>
+  </div>
+</template>
+```
+
+## 動態 Router 配置
+
+**新增一個[id].vue 的資料夾，也可以是資料夾，下面在加東西**
+
+## useRouter-and-useRoute
+
+[官方網站](https://router.vuejs.org/zh/)
+
+1. useRoute:可以取得所有跟 route 網址有關的所有參數資訊
+
+```vue
+<script setup>
+const route = useRoute();
+console.log(route);
+</script>
+```
+
+2. useRouter 提供許多函式讓你操作網址像是 push、replace、go 等方法，讓你可以再換頁上面更加方便
+
+```vue
+<script setup>
+const router = useRouter();
+
+const gotoAndPage = (path) => {
+  router.push(path);
+};
+</script>
+<template>
+  <div>
+    <button @click="gotoAndPage('/about')">go to About</button>
+  </div>
+</template>
+```
+
+## 開發階段啟動 https 憑證
+
+> 更改 package.json 裡下面文字
+
+```js
+ "scripts": {
+   "dev": "nuxt dev --https --ssl-cert ./https/localhost+2.pem --ssl-key ./https/localhost+2-key.pem",
+ },
+
+```
+
+**改完記得新增一個叫 https 的資料夾把 pem 和 key 放進去**
+
+## API 跨網域處理
+
+> 京站威秀 API 為例子
+
+```js
+onMounted(async () => {
+  const response = await fetch(
+    'https://www.vscinemas.com.tw/VsWeb/api/GetLstDicCinema'
+  ).then((res) => res.json());
+  console.log(response);
+});
+```
+
+**在 nuxt.config.ts 裡新增下面程式碼**
+
+```js
+export default defineNuxtConfig({
+  vite: {
+    server: {
+      proxy: {
+        '/VsWeb/api': {
+          target: 'https://www.vscinemas.com.tw/',
+          changeOrigin: true,
+        },
+      },
+    },
+  },
+});
+```
+
+## pinia 安裝
+
+```shell
+npm install pinia @pinia/nuxt
+```
+
+**如果安裝遇到無法解析的情況請在 package.json 加入以下這段，在重新打上面的指令**
+
+```json
+"overrides": {
+   "vue": "latest"
+},
+```
+
+**在 nuxt.config.ts 裡新增下面程式碼**
+
+```js
+export default defineNuxtConfig({
+  modules: ['@pinia/nuxt'],
+  imports: {
+    dirs: ['stores'],
+  },
+});
+```
+
+**新增一個 stores 資料夾，裡面新增.js 檔案**
+
+```js
+import { defineStore } from 'pinia';
+
+export const useNewsStore = defineStore('news', () => {
+  const count = ref(0);
+  const double = computed(() => count.value * 2);
+  const addCount = () => {
+    count.value++;
+  };
+  return { count, double, addCount };
+});
+```
+
+**在要使用的.vue 檔案裡新增**
+
+```vue
+<script setup>
+const newsStore = useNewsStore();
+</script>
+<template>
+  <div>
+    <h1>最新消息</h1>
+    <h2>{{ newsStore.double }}</h2>
+    <button @click="newsStore.addCount()">add count</button>
+  </div>
+</template>
+```
