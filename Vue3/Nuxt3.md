@@ -8,7 +8,7 @@
   - [layouts](#layouts)
   - [public 與 assets](#public-與-assets)
   - [Components and Auto Imports](#Components-and-Auto-Imports)
-  - [Setting Global](#Setting Global)
+  - [Setting Global](#Setting-Global)
   - [Composables and Auto Imports](#Composables-and-Auto-Imports)
   - [plugins](#plugins)
   - [Nuxt3 Server Side Rendering](#Nuxt3-Server-Side-Rendering)
