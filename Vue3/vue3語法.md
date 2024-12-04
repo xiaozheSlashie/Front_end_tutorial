@@ -220,8 +220,209 @@ console.log('2=>', data.value);
 
 **2. 我們在[安裝 Vite](./Vite.md#components-組件自動引入)和[安裝 Nuxt3](./Nuxt3.md#Components-and-Auto-Imports)都有教安裝自動載入 components 的套件和使用，這裡就不再贅述**
 
+### components 的載入
+
+```vue
+<script setup>
+//用components :is的用法需使用import把component載入進來
+import HelloWorld from '@/components/HelloWorld.vue';
+import HelloMike from '@/components/HelloMike.vue';
+import HelloJohn from '@/components/HelloJohn.vue';
+import HelloJane from '@/components/HelloJane.vue';
+
+const currentComponents = ref('HelloWorld');
+const clickToChangeComponents = (component) => {
+  currentComponents.value = component;
+};
+
+//記得不能return字串!!
+const changeComponents = computed(() => {
+  switch(currentComponents.value){
+    case 'HelloWorld':
+       return HelloWorld
+    case 'HelloMike':
+      return HelloMike
+    case 'HelloJohn':
+      return HelloJohn
+    case 'HelloJane':
+      return HelloJane
+    default:
+      return HelloWorld
+  }
+
+});
+</script>
+<template>
+  <component :is="changeComponents" />
+  <button @click="clickToChangeComponents('HelloWorld')">click to change
+  HelloWorld component<button />
+  <button @click="clickToChangeComponents('HelloMike')">click to change
+   HelloMike component<button />
+  <button @click="clickToChangeComponents('HelloJohn')">click to change
+  HelloJohn component<button />
+  <button @click="clickToChangeComponents('HelloJane')">click to change
+  HelloJane component<button />
+</template>
+```
+
 ## props
 
+**由父組件傳遞到子組件**
+
+**父組件的.vue**
+
+```vue
+<script setup>
+import Logo from './assets/img/logo.svg';
+</script>
+<template>
+  <VImg alt="Vue Logo" :src="Logo" className="logo" width:"125" height:"125" />
+</template>
+```
+
+**子組件的.vue (VImg.vue)**
+
+```vue
+<script setup>
+// array
+const propsArr = defineProps(['alt', 'className', 'src', 'width', 'height']);
+
+// object
+const propsObj = defineProps({
+  alt: {
+    type: String,
+    default: 'IMG ALT',
+  },
+  className: {
+    type: String,
+    default: 'error',
+  },
+  src: {
+    type: String,
+    default: '',
+  },
+  width: {
+    type: String,
+    default: '125',
+  },
+  height: {
+    type: String,
+    default: '125',
+  },
+});
+</script>
+<template>
+  <img
+    :src="propArr.src"
+    :alt="propsArr.alt"
+    :class="propsArr.className"
+    :width="propsArr.width"
+    :height="propsArr.height"
+  />
+
+  <img
+    :src="propObj.src"
+    :alt="propsObj.alt"
+    :class="propsObj.className"
+    :width="propsObj.width"
+    :height="propsObj.height"
+  />
+</template>
+```
+
+=> props 傳入 boolean
+
+```js
+const props = defineProps({
+  bool: {
+    type: Boolean,
+    default: true,
+  },
+});
+```
+
+=> props 也可以傳入 object 和 array
+
+```js
+const props = defineProps({
+  obj: {
+    type: Object,
+    default: () => ({}), //一行的形式
+    default: () => {
+      return;
+    }, //很多行的形式
+  },
+  arr: {
+    type: Array,
+    deafult: () => [],
+  },
+});
+```
+
 ## emit
+
+**由子組件傳遞到父組件**
+
+**子組件的.vue(add.vue)**
+
+```vue
+<script setup>
+const emit = defineEmits(['AddInt']);
+
+const handleAddClick = (event, a = 1, b = 2) => {
+  const result = a + b;
+  emit('AddInt', result);
+};
+</script>
+<template>
+  <div>
+    <button @click="andleAddClick(3, 5)">click</button>
+  </div>
+</template>
+```
+
+**父組件的.vue**
+
+```vue
+<script setup>
+const resInt = ref(0);
+const handleAddClick = (res) => {
+  resInt.value = res;
+};
+</script>
+<template>
+  <Add @AddInt="handleAddClick" />
+  {{ resInt }}
+</template>
+```
+
+=> emit 可以定義涵式驗證傳上去的東西是否正確
+
+** 子組件.vue**
+
+```vue
+<script setup>
+const emit = defineEmits({
+  AddInt: (res) => {
+    if (res === 3) {
+      return true; //要回傳
+    } else {
+      alert('傳遞參數錯誤!!');
+      return false; //不要回傳
+    }
+  },
+});
+
+const handleAddClick = (event, a = 1, b = 2) => {
+  const result = a + b;
+  emit('AddInt', result);
+};
+</script>
+<template>
+  <div>
+    <button @click="andleAddClick(3, 5)">click</button>
+  </div>
+</template>
+```
 
 ---
