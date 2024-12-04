@@ -4,6 +4,10 @@
   - [ref](#ref)
   - [reactive](#reactive)
   - [computed](#rcomputed)
+- [資料處理](#資料處理)
+  - [components](#components)
+  - [props](#props)
+  - [emit](#emit)
 
 # 定義資料
 
@@ -205,3 +209,18 @@ console.log('2=>', data.value);
   {{ data }}
 </template>
 ```
+
+---
+
+# 資料處理
+
+## components
+
+**拆分每隔組件，避免把所有東西都塞在同一個.vue 檔案裡面，可以幫助專案做更好的管理**
+**我們在[安裝 Vite](./Vite.md#components-組件自動引入)和[安裝 Nuxt3](./Nuxt3.md#Components-and-Auto-Imports)都有教安裝自動載入 components 的套件和使用，這裡就不再贅述**
+
+## props
+
+## emit
+
+---
