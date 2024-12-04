@@ -19,6 +19,12 @@
   - [應用在組件互相傳遞資料](#應用在組件互相傳遞資料)
 - [Composition API 和共用邏輯 Composables](#Composition-API-和共用邏輯-Composables)
 - [Pinia](#Pinia)
+  - [基礎用法](#基礎用法)
+    - [未解構的方式](#未解構的方式)
+    - [解構的方式](#解構的方式)
+  - [監控用法](#監控用法)
+    - [watch](#watch)
+    - [subscribe](#subscribe)
 - [Composables vs Pinia](#Composables-vs-Pinia)
 
 # 定義資料
@@ -861,7 +867,7 @@ export const useCountStore = defineStore('Count', () => {
 
 **在使用的.vue**
 
-**未解構的方式:**
+## 未解構的方式
 
 ```vue
 <script setup>
@@ -875,7 +881,7 @@ const countStore = useCountStore();
 </template>
 ```
 
-**解構的方式:**
+## 解構的方式
 
 ```vue
 <script setup>
@@ -916,9 +922,9 @@ const { addCount } = useCountStore(); // function可以直接解構
 import { defineStore } from 'pinia'; //Nuxts3不用加這行
 
 export const useAboutStore = defineStore('About', () => {
-  const name = ref('Mike');
+  const name = ref('Mike'); // 內部可修改的變量
   const setName = (str) => {
-    name.vale = str;
+    name.value = str;
   };
   return {
     name: readonly(name),
@@ -951,7 +957,34 @@ export const useCountStore = defineStore('Count', () => {
 });
 ```
 
-**Nuxt3 都不需要 import，import 會出錯!!**
+## Nuxt3 都不需要 import，import 會出錯!!
+
+## 監控功能
+
+### watch
+
+```js
+watch(
+  double,
+  (newValue, oldValue) => {
+    console.log('newValue=>', newValue, 'OldValue=>', oldValue);
+  },
+  { deep: true }
+);
+```
+
+### subscribe
+
+```js
+import { storeToRefs } from 'pinia'; //Nuxts3不用加這行
+import useCountStore from '@/store/count.js'; //Nuxts3不用加這行
+const countStore = useCountStore();
+const { addCount } = useCountStore(); // function可以直接解構
+const { count, double } = storeToRefs(countStore);
+countStore.$subscribe((mutation, state) => {
+  console.log(mutation);
+});
+```
 
 ---
 
