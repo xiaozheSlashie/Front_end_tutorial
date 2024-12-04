@@ -45,7 +45,7 @@ const data = reactive([
   email: 'A.A@gmail.com'
   ]); //只能放object和Array
 
-  settimeout(() => {
+  setTimeout(() => {
   data.name = 'John';
   data.age  = 20;
   data.emil = 'B.B@gmail.com';
@@ -64,6 +64,13 @@ const data = reactive([
 
 ```vue
 <script setup>
+const num =ref(0)
+const data3 = reactive([
+  num:num;
+])
+console.log(data3.num); //會自動解包不需要用.value
+
+
 const data1 = ref([
   name: 'John',
   age: 20,
@@ -75,7 +82,7 @@ const data2 = reactive([
   email: 'A.A@gmail.com'
   ]); //只能放object和Array
 
-  settimeout(() => {
+  setTimeout(() => {
 
   data1.value.name = 'John';
   data1.value.age  = 20;
@@ -120,3 +127,81 @@ watch(data2,()=>{
 | 是否能被 watch 監控 | 若是用 object 和 array 則無法監控 | 可以監控               |
 
 ## computed
+
+```vue
+<script setup>
+const data = computed(() => {
+  return {
+    name = 'Mike',
+    age = 12
+  };
+});
+</script>
+<template>
+  {{ data.name }}
+  {{ data.age }}
+</template>
+```
+
+=> 拿來重組跟計算資料
+
+```vue
+<script setup>
+const name = ref('Mike');
+const data = computed(() => {
+  return `我的名字叫{name.value}!`;
+});
+setTimeout(() => {
+  name.value = 'John';
+}, 2000);
+</script>
+<template>
+  {{ data }}
+</template>
+```
+
+**特性:只要裡面放有響應式的資料，若資料改變會自動偵測去改變**
+
+```vue
+<script setup>
+const index = ref(0);
+const data = computed(() => {
+  if (index.value > 3) {
+    return '這個大於3';
+  } else {
+    return '這個小於3';
+  }
+});
+setTimeout(() => {
+  index.value++;
+}, 2000);
+</script>
+<template>
+  {{ data }}
+</template>
+```
+
+**注意**
+
+1. computed 不能傳參數，要傳參數請用 function
+2. computed 有 get 和 set 的功能
+
+```vue
+<script setup>
+const count = ref(0);
+const data = computed(() => {
+  get: () => {
+    return count.value;
+  };
+  set: (val) => {
+    count.value = val;
+  };
+});
+console.log('1=>', data.value);
+data.value = 5;
+console.log('2=>', data.value);
+</script>
+<template>
+  {{ data }}
+</template>
+```
