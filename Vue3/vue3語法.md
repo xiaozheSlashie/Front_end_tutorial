@@ -843,7 +843,7 @@ onMounted(() => {
 **stores/count.js**
 
 ```js
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'; //Nuxts3不用加這行
 
 export const useCountStore = defineStore('Count', () => {
   const count = ref(0);
@@ -879,7 +879,7 @@ const countStore = useCountStore();
 
 ```vue
 <script setup>
-import { storeToRefs } from 'pinia'; // value要import  storeToRefs，用storeToRefs來解構
+import { storeToRefs } from 'pinia'; //Nuxts3不用加這行
 import useCountStore from '@/store/count.js'; //Nuxts3不用加這行
 const countStore = useCountStore();
 const { addCount } = useCountStore(); // function可以直接解構
