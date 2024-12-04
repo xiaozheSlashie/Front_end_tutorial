@@ -8,6 +8,7 @@
   - [components](#components)
   - [props](#props)
   - [emit](#emit)
+  - [expose](#expose)
 
 # 定義資料
 
@@ -359,6 +360,17 @@ const props = defineProps({
 });
 ```
 
+=> props 也可以傳入 function
+
+```js
+const props = defineProps({
+  fun: {
+    type: function,
+    default:()=>{}
+  },
+});
+```
+
 ## emit
 
 **由子組件傳遞到父組件**
@@ -424,5 +436,52 @@ const handleAddClick = (event, a = 1, b = 2) => {
   </div>
 </template>
 ```
+
+## expose
+
+**子組件向父組件暴露屬性和方法，讓父組件可以直接使用子組件的屬性和方法**
+
+**defineExpose 沒有返回值**
+
+**子組件的.vue**
+
+```vue
+<script setup>
+const name = ref('John');
+const sayName = () => {
+  console.log('我的名字是 ' + name.value);
+};
+defineExpose({
+  name,
+  sayName,
+});
+</script>
+
+<template>
+  {{ name }}
+</template>
+```
+
+**父組件的.vue**
+
+```vue
+<script setup>
+const child = ref(null);
+onMounted(() => {
+  console.log(child.value.name); //John
+  child.value.sayName(); //我的名字是 John
+});
+</script>
+
+<template>
+  <Child ref="child"></Child>
+</template>
+```
+
+**注意:**
+
+1. 當父組件直接使用子組件的屬性時會自動解包，所以不用在加.value
+
+2. defineExpose 一定要在變數和涵式定義之後再使用(最好放在最下面)，不然會出錯!!
 
 ---
