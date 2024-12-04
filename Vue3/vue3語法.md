@@ -16,7 +16,7 @@
       - [.number](#number)
       - [.trim](#trim)
     - [可以綁定的元素](#可以綁定的元素)
-  - [應用在組件互相傳遞上]
+  - [應用在組件互相傳遞資料](#應用在組件互相傳遞資料)
 
 # 定義資料
 
@@ -616,7 +616,9 @@ const checkboxValue = ref([]);
 </template>
 ```
 
-## 應用在組件互相傳遞上
+## 應用在組件互相傳遞資料
+
+**範例 1:**
 
 **父組件**
 
@@ -645,5 +647,82 @@ const emit = defineEmits(['Update:modelValue']);
     :value="props.modelValue"
     @input="$emit('Update:modelValue', $event.target.value)"
   />
+</template>
+```
+
+> props 下來的值不可以在子組件修改，修改要去父組件修改
+
+**範例 2:**
+
+**父組件**
+
+```vue
+<script setup>
+const userName = ref('Mike');
+const handleChangeName = (res) => {
+  userName.value = res;
+};
+</script>
+<template>
+  <Child :name="userNmae" @changeName="handleChangeName"></Child>
+</template>
+```
+
+**子組件**
+
+```vue
+<script setup>
+const props = defineProps({
+  name: {
+    type: String,
+    default: '',
+  },
+});
+
+const emit = defineEmits(['changeName']);
+const clickToChangeName = () => {
+  emit('changeName', 'Jack');
+};
+</script>
+<template>
+  <h1>props.name</h1>
+  <button @click="clickToChangeName">click to change name</button>
+</template>
+```
+
+**範例 3:**
+
+**父組件**
+
+```vue
+<script setup>
+const name = ref('Mike');
+const changeName = (res) => {
+  name.value = res;
+};
+</script>
+<template>
+  <child :name="name" :changeName="changeName"> </child>
+</template>
+```
+
+**子組件**
+
+```vue
+<script setup>
+const props = defineProps({
+  name: {
+    type: String,
+    default: '',
+  },
+  changeName: {
+    type: Function,
+    default: () => {},
+  },
+});
+</script>
+<template>
+  <h1>{{ props.name }}</h1>
+  <button @click="props.changeName('Jacky')">click to change name</button>
 </template>
 ```
