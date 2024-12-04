@@ -790,6 +790,8 @@ const { pageX, pageY } = useCatchMousePosition();
 npm install axios
 ```
 
+**.js 檔案**
+
 ```js
 import axios from 'axios';
 export const useFetchCard = () => {
@@ -812,6 +814,8 @@ export const useFetchCard = () => {
   };
 };
 ```
+
+**.vue 檔案**
 
 ```vue
 <script setup>
