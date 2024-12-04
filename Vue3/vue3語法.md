@@ -838,6 +838,78 @@ onMounted(() => {
 
 # Pinia
 
+**安裝指令可以去[安裝 Vite](./Vite#全域資料管理-pinia-已安裝可跳過.md)和[安裝 Nuxt3](./Nuxt3#pinia-安裝.md)查看**
+
+**stores/count.js**
+
+```js
+import { defineStore } from 'pinia';
+
+export const useCountStore = defineStore('Count', () => {
+  const count = ref(0);
+  const double = computed(() => count.value * 2);
+  const addCount = () => {
+    count.value++;
+  };
+  return {
+    count,
+    double,
+    addCount,
+  };
+});
+```
+
+**在使用的.vue**
+
+**未解構的方式:**
+
+```vue
+<script setup>
+import useCountStore from '@/store/count.js'; //Nuxts3不用加這行
+const countStore = useCountStore();
+</script>
+<template>
+  {{ countStore.count }}
+  {{ countStore.double }}
+  <button @click="newsStore.addCount()">click to add</button>
+</template>
+```
+
+**解構的方式:**
+
+```vue
+<script setup>
+import { storeToRefs } from 'pinia'; // value要import  storeToRefs，用storeToRefs來解構
+import useCountStore from '@/store/count.js'; //Nuxts3不用加這行
+const countStore = useCountStore();
+const { addCount } = useCountStore(); // function可以直接解構
+const { count, double } = storeToRefs(countStore);
+</script>
+<template>
+  {{ count }}
+  {{ double }}
+  <button @click="addCount()">click to add</button>
+</template>
+```
+
+1. 若是值要先 `import { storeToRefs } from 'pinia';`再用 storeToRefs 解構
+
+```js
+import { storeToRefs } from 'pinia';
+import useCountStore from '@/store/count.js'; //Nuxts3不用加這行
+const countStore = useCountStore();
+const { count, double } = storeToRefs(countStore);
+```
+
+2. 若是 function 可以直接解構
+
+```js
+import useCountStore from '@/store/count.js'; //Nuxts3不用加這行
+const { addCount } = useCountStore(); // function可以直接解構
+```
+
+**Nuxt3 都不需要 import**
+
 ---
 
 # Composables vs Pinia
