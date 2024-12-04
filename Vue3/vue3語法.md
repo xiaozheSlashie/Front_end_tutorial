@@ -68,7 +68,7 @@ const num =ref(0)
 const data3 = reactive([
   num:num;
 ])
-console.log(data3.num); //會自動解包不需要用.value
+console.log(data3.num); //會自動解包不需要用.value，recative每一個屬性等於ref的部分
 
 
 const data1 = ref([
