@@ -1,9 +1,9 @@
 ## 目錄
 
 - [定義資料](#定義資料)
-  - (ref)(#ref)
-  - (reactive)(#reactive)
-  - (computed)(#rcomputed)
+  - [ref](#ref)
+  - [reactive](#reactive)
+  - [computed](#rcomputed)
 
 # 定義資料
 
