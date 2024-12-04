@@ -17,6 +17,9 @@
       - [.trim](#trim)
     - [可以綁定的元素](#可以綁定的元素)
   - [應用在組件互相傳遞資料](#應用在組件互相傳遞資料)
+- [Composition API 和共用邏輯 Composables](#Composition-API-和共用邏輯-Composables)
+- [Pinia](#Pinia)
+- [Composables vs Pinia](#Composables-vs-Pinia)
 
 # 定義資料
 
@@ -728,3 +731,123 @@ const props = defineProps({
   <button @click="props.changeName('Jacky')">click to change name</button>
 </template>
 ```
+
+---
+
+# Composition API 和共用邏輯 Composables
+
+> 新建一個 Composables 的資料夾，在裡面放入.js 檔案(共用邏輯檔案)
+
+**範例:想要抓取滑鼠座標**
+
+**在 useCatchMousePosition.js**
+
+```js
+import { onMounted, onUnmounted, ref, readonly } from 'vue';
+export const useCatchMousePosition = () => {
+  const pageX = ref(0);
+  const pageY = ref(0);
+
+  const movePosition = (e) => {
+    pageX.value = e.pageX;
+    pageY.value = e.pageY;
+  };
+  onMounted(() => {
+    window.addEventListener('mouseover', movePosition);
+  });
+
+  onUnmounted(() => {
+    window.removeEventListener('mouseover', movePosition);
+  });
+
+  return {
+    pageX: readonly(pageX), //只可讀取
+    pageY: readonly(pageY),
+  };
+};
+```
+
+> 要設定要再建立一個 setPageX 的涵式去做設定，不要直接改值
+
+** 在要使用的.vue**
+
+```vue
+<script setup>
+import { useCatchMousePosition } from '@/composables/useCatchMousePosition.js';
+const { pageX, pageY } = useCatchMousePosition();
+</script>
+<template>
+  {{ pageX }}
+  {{ pageY }}
+</template>
+```
+
+**API 處理**
+**下載 axios**
+
+```shell
+npm install axios
+```
+
+```js
+import axios from 'axios';
+export const useFetchCard = () => {
+  const errorMsg = ref(null);
+  const data = ref([]);
+  const fetchInit = async () => {
+    try {
+      const res = await axios.get(
+        'https://vue-lessons-api.vercel.app/courses/list'
+      );
+      data.value = res.data;
+    } catch (error) {
+      errorMsg.value = 'API 發生錯誤!!';
+    }
+  };
+  return {
+    data: readonly(data),
+    errorMsg: readonly(errorMsg),
+    fetchInit,
+  };
+};
+```
+
+```vue
+<script setup>
+import { useFetchCard } from '@/composables/useFetchCard.js';
+const { data, errorMsg, fetchInit } = useFetchCard();
+onMounted(() => {
+  fetchInit();
+});
+</script>
+<template>
+  <h1 v-if="data.length === 0">loading...</h1>
+  <div v-else>
+    {{ data }}
+  </div>
+  <h1 v-if="errorMsg !== null">{{ errorMsg }}</h1>
+</template>
+```
+
+---
+
+# Pinia
+
+---
+
+# Composables vs Pinia
+
+| **特性**       | **Composables**                                                 | **Pinia**                                                          |
+| -------------- | --------------------------------------------------------------- | ------------------------------------------------------------------ |
+| **用途**       | 用於封裝和處理共用邏輯，無狀態管理特化功能。                    | 用於集中化的全域資料管理（Vue 3 的官方推薦解決方案）。             |
+| **依賴性**     | 標準 Vue 3 Composition API，可直接使用。                        | 必須安裝 `@pinia/nuxt` 或 `pinia` 模組。                           |
+| **適用範圍**   | 在單一或多個元件間共享邏輯和功能（例如 API 請求、計算屬性等）。 | 適用於應用程式全域的狀態共享和數據管理。                           |
+| **數據持久化** | 不提供數據持久化，需要手動實現（例如本地存儲）。                | 支援第三方插件進行數據持久化（如 `pinia-plugin-persistedstate`）。 |
+| **調試工具**   | 無專用調試工具，需使用 Vue DevTools 查看相關數據。              | 與 Vue DevTools 無縫集成，可查看和修改狀態。                       |
+| **結構化**     | 自由度高，可根據需求任意結構化組織。                            | 具有嚴格的 Store 結構，包含 `state`、`getters` 和 `actions`。      |
+| **類型支援**   | 手動實現類型定義（如使用 TypeScript）。                         | 原生支援 TypeScript，提供自動補全和類型檢查。                      |
+| **性能**       | 適用於小型邏輯模組，共享範圍小且輕量。                          | 適用於大型應用的狀態管理，可支援多個模組且性能優化良好。           |
+| **學習曲線**   | 基於 Composition API，學習門檻低，靈活性高。                    | 需要學習 Pinia 特有 API，如 `defineStore`。                        |
+| **更新觸發**   | 通常依賴 `ref` 或 `reactive`，手動控制響應式數據更新。          | 自動跟蹤狀態更改，且支援批量更新，避免多餘的重渲染。               |
+| **使用範例**   | 用於封裝 API 請求邏輯、計算屬性或工具函數。                     | 用於存儲用戶狀態、全局設置或多組件共享的大量數據。                 |
+| **額外依賴**   | 不需要額外的依賴，僅需 Vue 3 原生支持。                         | 需要引入 Pinia 模組，並在應用中註冊。                              |
