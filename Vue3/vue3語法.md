@@ -692,6 +692,8 @@ const clickToChangeName = () => {
 
 **範例 3:**
 
+> One-Way Data Flow 單向資料流
+
 **父組件**
 
 ```vue
