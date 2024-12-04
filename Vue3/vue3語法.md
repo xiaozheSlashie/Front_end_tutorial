@@ -769,7 +769,7 @@ export const useCatchMousePosition = () => {
 
 > 要設定要再建立一個 setPageX 的涵式去做設定，不要直接改值
 
-** 在要使用的.vue**
+**在要使用的.vue**
 
 ```vue
 <script setup>
