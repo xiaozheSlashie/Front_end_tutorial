@@ -26,6 +26,9 @@
     - [watch](#watch)
     - [subscribe](#subscribe)
 - [Composables vs Pinia](#Composables-vs-Pinia)
+- [Vue-Router](#Vue-Router)
+  - [Vite](#Vite)
+  - [Nuxt3](#Nuxt3)
 
 # 定義資料
 
@@ -1004,3 +1007,97 @@ countStore.$subscribe((mutation, state) => {
 | **更新觸發**   | 通常依賴 `ref` 或 `reactive`，手動控制響應式數據更新。          | 自動跟蹤狀態更改，且支援批量更新，避免多餘的重渲染。               |
 | **使用範例**   | 用於封裝 API 請求邏輯、計算屬性或工具函數。                     | 用於存儲用戶狀態、全局設置或多組件共享的大量數據。                 |
 | **額外依賴**   | 不需要額外的依賴，僅需 Vue 3 原生支持。                         | 需要引入 Pinia 模組，並在應用中註冊。                              |
+
+---
+
+# Vue-Router
+
+## Vite
+
+```vue
+<template>
+  <RouterLink to="/"> Home <RouterLink/>
+  <RouterLink to="/about"> About <RouterLink/>
+</template>
+```
+
+**router/index.js**
+
+```js
+import { createMemoryHistory, createRouter } from 'vue-router';
+
+import HomeView from './HomeView.vue';
+import AboutView from './AboutView.vue';
+
+const routes = [
+  { path: '/', component: HomeView },
+  { path: '/about', component: AboutView },
+];
+
+const router = createRouter({
+  history: createMemoryHistory(),
+  routes,
+});
+```
+
+[vue router 官方網站](https://router.vuejs.org/zh/)
+
+## Nuxt3
+
+```vue
+<template>
+  <NuxtLink to="/"> Home page </NuxtLink>
+  <NuxtLink to="/about"> About page </NuxtLink>
+</template>
+```
+
+### 帶參數
+
+```vue
+<template>
+  <NuxtLink :to="{ name: 'posts-id', params: { id: 123 } }">
+    Post 123
+  </NuxtLink>
+</template>
+```
+
+### download pdf
+
+```vue
+<template>
+  <NuxtLink to="/the-important-report.pdf" external> Download Report </NuxtLink>
+</template>
+```
+
+### 外部網址
+
+```vue
+<template>
+  <NuxtLink to="https://nuxtjs.org"> Nuxt website </NuxtLink>
+  <!-- <a href="https://nuxtjs.org" rel="noopener noreferrer">...</a> -->
+</template>
+```
+
+### 也可加 a 的額外參數
+
+```vue
+<template>
+  <NuxtLink to="https://twitter.com/nuxt_js" target="_blank">
+    Nuxt Twitter
+  </NuxtLink>
+  <!-- <a href="https://twitter.com/nuxt_js" target="_blank" rel="noopener noreferrer">...</a> -->
+
+  <NuxtLink to="https://discord.nuxtjs.org" target="_blank" rel="noopener">
+    Nuxt Discord
+  </NuxtLink>
+  <!-- <a href="https://discord.nuxtjs.org" target="_blank" rel="noopener">...</a> -->
+
+  <NuxtLink to="https://github.com/nuxt" no-rel> Nuxt GitHub </NuxtLink>
+  <!-- <a href="https://github.com/nuxt">...</a> -->
+
+  <NuxtLink to="/contact" target="_blank">
+    Contact page opens in another tab
+  </NuxtLink>
+  <!-- <a href="/contact" target="_blank" rel="noopener noreferrer">...</a> -->
+</template>
+```
