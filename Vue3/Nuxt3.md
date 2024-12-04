@@ -476,3 +476,39 @@ const newsStore = useNewsStore();
   </div>
 </template>
 ```
+
+## 統整
+
+### 全部指令
+
+```shell
+npx nuxi add page page-name
+npx nuxi add layout default
+npx nuxi add component Home
+npx nuxi add composable addCount
+npx nuxi add plugin hello
+npm install pinia @pinia/nuxt
+```
+
+### 完整的 nuxt.config.ts
+
+```js
+export default defineNuxtConfig({
+  compatibilityDate: '2024-11-01',
+  devtools: { enabled: true },
+  modules: ['@pinia/nuxt'],
+  imports: {
+    dirs: ['stores'],
+  },
+  vite: {
+    server: {
+      proxy: {
+        '/VsWeb/api': {
+          target: 'https://www.vscinemas.com.tw/',
+          changeOrigin: true,
+        },
+      },
+    },
+  },
+});
+```
