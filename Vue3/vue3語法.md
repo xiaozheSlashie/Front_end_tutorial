@@ -4,11 +4,19 @@
   - [ref](#ref)
   - [reactive](#reactive)
   - [computed](#rcomputed)
-- [物件處理](#物件處理)
+- [組件處理](#組件處理)
   - [components](#components)
   - [props](#props)
   - [emit](#emit)
   - [expose](#expose)
+- [資料綁定](#資料綁定)
+  - [v-model](#v-model)
+    - [modifiers](#modifiers)
+      - [.lazy](#lazy)
+      - [.number](#number)
+      - [.trim](#trim)
+    - [可以綁定的元素](#可以綁定的元素)
+  - [應用在組件互相傳遞上]
 
 # 定義資料
 
@@ -213,7 +221,7 @@ console.log('2=>', data.value);
 
 ---
 
-# 資料處理
+# 組件處理
 
 ## components
 
@@ -485,3 +493,157 @@ onMounted(() => {
 2. defineExpose 一定要在變數和涵式定義之後再使用(最好放在最下面)，不然會出錯!!
 
 ---
+
+# 資料綁定
+
+## v-model
+
+**用來做資料的雙向綁定**
+
+```vue
+<script setup>
+const userName = ref('Mike');
+const clickSetName = (str) => {
+  userName.value = str;
+};
+</script>
+<template>
+  <label for="userName">用戶名稱：</label>
+  <input type="text" id="userName" v-model="userName" />
+  {{ userName }}
+
+  <button @click="clikcSetName('John')">click to change name</button>
+</template>
+```
+
+### modifiers
+
+#### lazy
+
+**從 input 事件改成 change 事件**
+
+> 裡面的東西確定被改動後才會被觸發
+
+```vue
+<script setup>
+const userName = ref('Mike');
+const clickSetName = (str) => {
+  userName.value = str;
+};
+</script>
+<template>
+  <label for="userName">用戶名稱：</label>
+  <input type="text" id="userName" v-model.lazy="userName" />
+  <!--foucus在上面時並不會被更新-->
+  {{ userName }}
+
+  <button @click="clikcSetName('John')">click to change name</button>
+</template>
+```
+
+#### number
+
+**1. 字串強制轉型為數字**
+**2. 若是輸入有含文字則不會轉型，只有輸入數字會(不能混合文字輸入)**
+**3. 若開頭是 0 會把 0 給去掉(可用在電話號碼上面)**
+
+```vue
+<script setup>
+const userAge = ref('12');
+const clickSetAge = (num) => {
+  userAge.value = num;
+};
+watch(userAge, (newValue) => {
+  console.log(newValue);
+});
+</script>
+<template>
+  <label for="userAge">用戶年齡：</label>
+  <input type="text" id="userAge" v-model.number="userAge" />
+  {{ userAge }}
+
+  <button @click="clikcSetName('20')">click to change Age</button>
+</template>
+```
+
+#### trim
+
+**避免使用者打出空格**
+
+```vue
+<script setup>
+const userName = ref('Mike');
+const clickSetName = (str) => {
+  userName.value = str;
+};
+</script>
+<template>
+  <label for="userName">用戶名稱：</label>
+  <input type="text" id="userName" v-model.trim="userName" />
+  {{ userName }}
+
+  <button @click="clikcSetName('John')">click to change name</button>
+</template>
+```
+
+### 可以綁定的元素
+
+> 能綁定就不要用{{value}}去寫，應該改成 v-model="value"
+
+1. input
+2. textarea
+3. checkbox
+4. radio
+5. select
+
+**checkbox 使用可以搭配 array**
+
+```vue
+<script>
+const checkboxValue = ref([]);
+</script>
+<template>
+  <p>checks name: {{ checkboxValue }}</p>
+
+  <input type="checkbox" id="john" value="john" v-model="checkboxValue" />
+  <label for="john">john</label>
+
+  <input type="checkbox" id="jack" value="jack" v-model="checkboxValue" />
+  <label for="jack">jack</label>
+
+  <input type="checkbox" id="amy" value="amy" v-model="checkboxValue" />
+  <label for="amy">amy</label>
+</template>
+```
+
+## 應用在組件互相傳遞上
+
+**父組件**
+
+```vue
+<script setup>
+const userName = ref('Mike');
+</script>
+<template>
+  <Child v-model="userName"></Child>
+  {{ userName }}
+</template>
+```
+
+**子組件**
+
+```vue
+<script setup>
+const props = defineProps(['modelValue']);
+const emit = defineEmits(['Update:modelValue']);
+</script>
+<template>
+  <label for="userName">用戶名稱：</label>
+  <input
+    type="text"
+    id="userName"
+    :value="props.modelValue"
+    @input="$emit('Update:modelValue', $event.target.value)"
+  />
+</template>
+```
