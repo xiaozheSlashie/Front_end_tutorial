@@ -895,7 +895,7 @@ const { count, double } = storeToRefs(countStore);
 1. 若是值要先 `import { storeToRefs } from 'pinia';`再用 storeToRefs 解構
 
 ```js
-import { storeToRefs } from 'pinia';
+import { storeToRefs } from 'pinia'; //Nuxts3不用加這行
 import useCountStore from '@/store/count.js'; //Nuxts3不用加這行
 const countStore = useCountStore();
 const { count, double } = storeToRefs(countStore);
@@ -908,7 +908,50 @@ import useCountStore from '@/store/count.js'; //Nuxts3不用加這行
 const { addCount } = useCountStore(); // function可以直接解構
 ```
 
-**Nuxt3 都不需要 import**
+**Pinia 的.js 互相使用**
+
+**stores/about.js**
+
+```js
+import { defineStore } from 'pinia'; //Nuxts3不用加這行
+
+export const useAboutStore = defineStore('About', () => {
+  const name = ref('Mike');
+  const setName = (str) => {
+    name.vale = str;
+  };
+  return {
+    name: readonly(name),
+    setName,
+  };
+});
+```
+
+**stores/count.js**
+
+```js
+import { defineStore } from 'pinia'; //Nuxts3不用加這行
+import { storeToRefs } from 'pinia'; //Nuxts3不用加這行
+import { useAboutStore } from '@/store/useAboutStore.js'; //Nuxts3不用加這行
+export const useCountStore = defineStore('Count', () => {
+  const count = ref(0);
+  const aboutStore = useAboutStore();
+  const { setName } = useAboutStore();
+  const { name } = storeToRefs(aboutStore);
+  const double = computed(() => count.value * 2 + name.value);
+  const addCount = () => {
+    count.value++;
+    setName('Jack');
+  };
+  return {
+    count,
+    double,
+    addCount,
+  };
+});
+```
+
+**Nuxt3 都不需要 import，import 會出錯!!**
 
 ---
 
